@@ -1,26 +1,10 @@
 
 
-# README
+# Library Management System
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Db setup
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- Create user
+    - `CREATE USER railsapp WITH ENCRYPTED PASSWORD 'railsapp';`
+- Grant SuperUser access
+    - `ALTER ROLE railsapp WITH superuser`
