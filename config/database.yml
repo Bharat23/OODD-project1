@@ -12,7 +12,7 @@ default: &default
 development:
   <<: *default
   database: library_development
-  username: railsapp
+  usermame: railsapp
   password: railsapp
 
 # Warning: The database defined as "test" will be erased and
