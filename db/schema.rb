@@ -48,32 +48,32 @@ ActiveRecord::Schema.define do
     t.references :libraries, foreign_key: true
   end
 
-  create_table "bookmarks"
-  t.references :students, foreign_key: true
-  t.references :books, foreign_key: true
-end
+  create_table "bookmarks", force: :cascade do |t|
+    t.references :students, foreign_key: true
+    t.references :books, foreign_key: true
+  end
 
-create_table "book_issue_transactions", force: :cascade do |t|
-  t.references :students, foreign_key: true
-  t.references :books, foreign_key: true
-  t.references :libraries, foreign_key: true
-  t.string "status", inclusion: {in: ["On Hold","Approved","Denied","Returned"]}
-  t.date "due_date"
-  t.date "last_updated"
-  t.string "reason"
-  t.float "fine_amount"
-end
+  create_table "book_issue_transactions", force: :cascade do |t|
+    t.references :students, foreign_key: true
+    t.references :books, foreign_key: true
+    t.references :libraries, foreign_key: true
+    t.string "status", inclusion: {in: ["On Hold","Approved","Denied","Returned"]}
+    t.date "due_date"
+    t.date "last_updated"
+    t.string "reason"
+    t.float "fine_amount"
+  end
 
-create_table "transaction_log", force: :cascade do |t|
-  t.references :books, foreign_key: true
-  t.references :users, foreign_key: true
-  t.string "action"
-  t.datetime "timestamp_of_action"
-end
+  create_table "transaction_log", force: :cascade do |t|
+    t.references :books, foreign_key: true
+    t.references :users, foreign_key: true
+    t.string "action"
+    t.datetime "timestamp_of_action"
+  end
 
-create_table "library_book_mapping", force: :cascade do |t|
-  t.references :libraries, foreign_key: true
-  t.references :books, foreign_key: true
-  t.integer "book_count"
-end
+  create_table "library_book_mapping", force: :cascade do |t|
+    t.references :libraries, foreign_key: true
+    t.references :books, foreign_key: true
+    t.integer "book_count"
+  end
 end
