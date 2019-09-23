@@ -26,4 +26,7 @@ test:
 
 production:
   <<: *default
-  database: library_production
+  database: <%= ENV['DATABASE'] %>
+  url: <%= ENV['DATABASE_URL'] %>
+  username: <%= ENV['DATABASE_USERNAME']  %>
+  password: <%= ENV['DATABASE_PASSWORD']  %>
