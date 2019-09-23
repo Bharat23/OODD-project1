@@ -1,8 +1,7 @@
 require 'base64'
-require 'open-uri'
 
 class BooksController < ApplicationController
-  before_action :set_book, only: [:show, :edit, :update, :destroy]
+  before_action :set_book, only: [:show, :edit, :update, :destroy, :search]
 
   # GET /books
   # GET /books.json
@@ -27,10 +26,8 @@ class BooksController < ApplicationController
   # POST /books
   # POST /books.json
   def create
-    img = book_params['front_cover_img']
-    book_params['front_cover_img'] = Base64.encode64(img.open.read);
-    puts book_params['front_cover_img']
-    @book = Book.new(book_params)
+    book_params_copy = convert_image(book_params)
+    @book = Book.new(book_params_copy)
     respond_to do |format|
       if @book.save
         format.html { redirect_to @book, notice: 'Book was successfully created.' }
@@ -45,8 +42,9 @@ class BooksController < ApplicationController
   # PATCH/PUT /books/1
   # PATCH/PUT /books/1.json
   def update
+    book_params_copy = convert_image(book_params)
     respond_to do |format|
-      if @book.update(book_params)
+      if @book.update(book_params_copy)
         format.html { redirect_to @book, notice: 'Book was successfully updated.' }
         format.json { render :show, status: :ok, location: @book }
       else
@@ -54,6 +52,10 @@ class BooksController < ApplicationController
         format.json { render json: @book.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def search
+    @books = Book.all
   end
 
   # DELETE /books/1
@@ -75,5 +77,12 @@ class BooksController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def book_params
       params.require(:book).permit(:isbn, :title, :author, :language, :date_published, :edition, :front_cover_img, :subject, :summary, :special_collection)
+    end
+
+    def convert_image(book_params)
+      book_params_copy = book_params
+      img = book_params_copy['front_cover_img']
+      book_params_copy['front_cover_img'] = 'data:' + book_params['front_cover_img'].content_type + ';base64,' + Base64.encode64(img.open.read);
+      book_params_copy
     end
 end
