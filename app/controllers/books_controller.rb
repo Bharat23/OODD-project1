@@ -1,7 +1,18 @@
 require 'base64'
 
 class BooksController < ApplicationController
-  before_action :set_book, only: [:show, :edit, :update, :destroy, :search]
+  before_action :set_book, only: [:show, :edit, :update, :destroy]
+
+
+  def search
+    keyword = params[:q]
+    type = params[:type]
+    if (type == 'date_published')
+      @books = Book.where(type + ' = ?', keyword)
+    else
+      @books = Book.where(type + ' ilike ?', '%'+keyword+'%')
+    end
+  end
 
   # GET /books
   # GET /books.json
@@ -52,10 +63,6 @@ class BooksController < ApplicationController
         format.json { render json: @book.errors, status: :unprocessable_entity }
       end
     end
-  end
-
-  def search
-    @books = Book.all
   end
 
   # DELETE /books/1
