@@ -19,3 +19,15 @@ Book.create([
         summary: "this is a test summary"
     }
 ]);
+
+University.create([
+    {
+        name: 'North Carolina State University',
+    },
+    {
+        name: 'University of North Carolina',
+    },
+    {
+        name: 'Duke',
+    }
+]);

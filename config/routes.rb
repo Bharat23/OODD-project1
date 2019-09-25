@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :universities
   match '/books/actions/search/' => 'books#search', :via => :get
   resources :books
     
