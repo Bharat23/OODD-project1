@@ -26,4 +26,4 @@ test:
 
 production:
   <<: *default
-  database: library_production
+  url: <%= ENV['DATABASE_URL'] %>

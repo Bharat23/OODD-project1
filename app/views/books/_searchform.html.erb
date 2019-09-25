@@ -1,0 +1,11 @@
+<%= form_tag(books_actions_search_path, method: :get) do %>
+    <%= text_field_tag(:q, params[:q]) %>
+    <%= submit_tag('Search') %>
+    <br>
+    <b>By:</b>
+        <%= radio_button_tag :type, 'title', :checked => (params[:type] == 'title') %> Title
+        <%= radio_button_tag :type, 'author', :checked => (params[:type] == 'author') %> Author
+        <%= radio_button_tag :type, 'date_published', :checked => (params[:type] == 'date_published') %> Date
+        <%= radio_button_tag :type, 'subject', :checked => (params[:type] != 'category') %> Category
+<% end%>
+<br>
