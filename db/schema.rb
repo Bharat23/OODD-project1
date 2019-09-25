@@ -52,10 +52,10 @@ ActiveRecord::Schema.define(version: 2019_09_25_042020) do
     t.string "name"
     t.string "location"
     t.integer "borrow_duration"
-    t.float "total_overdue"
+    t.float "fine_per_day"
   end
 
-  create_table "library_book_mapping", force: :cascade do |t|
+  create_table "library_book_mappings", force: :cascade do |t|
     t.bigint "libraries_id"
     t.bigint "books_id"
     t.integer "book_count"
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 2019_09_25_042020) do
     t.index ["users_id"], name: "index_students_on_users_id"
   end
 
-  create_table "transaction_log", force: :cascade do |t|
+  create_table "transaction_logs", force: :cascade do |t|
     t.bigint "books_id"
     t.bigint "users_id"
     t.string "action"
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 2019_09_25_042020) do
     t.string "name"
   end
 
-  create_table "university_library_mapping", force: :cascade do |t|
+  create_table "university_library_mappings", force: :cascade do |t|
     t.bigint "libraries_id"
     t.bigint "universities_id"
     t.index ["libraries_id"], name: "index_university_library_mapping_on_libraries_id"

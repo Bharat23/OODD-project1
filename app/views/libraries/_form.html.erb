@@ -1,0 +1,40 @@
+<%= form_with(model: library, local: true) do |form| %>
+  <% if library.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(library.errors.count, "error") %> prohibited this library from being saved:</h2>
+
+      <ul>
+        <% library.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :location %>
+    <%= form.text_field :location %>
+  </div>
+
+  <div class="field">
+    <%= form.label :borrow_duration %>
+    <%= form.number_field :borrow_duration %>
+  </div>
+
+  <div class="field">
+    <%= form.label :fine_per_day %>
+    <%= form.text_field :fine_per_day %>
+  </div>
+
+  <%= form.label :university %>
+  <%= select("university", "university_id", University.all.collect{ |c| [ c.name, c.id] }) %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
