@@ -18,6 +18,7 @@ class BooksController < ApplicationController
   # GET /books.json
   def index
     @books = Book.all
+    BookIssueMailer.welcome_email.deliver_now
   end
 
   # GET /books/1
