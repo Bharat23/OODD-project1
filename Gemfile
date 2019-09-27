@@ -9,6 +9,7 @@ gem 'rails', '~> 6.0.0'
 # gem for postgresql
 gem 'pg'
 
+gem 'devise'
 gem 'schema_to_scaffold'
 
 # Use Puma as the app server
