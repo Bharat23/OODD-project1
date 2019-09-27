@@ -26,8 +26,6 @@ ActiveRecord::Schema.define(version: 2019_09_26_024957) do
     t.index ["students_id"], name: "index_book_issue_transactions_on_students_id"
   end
 
-#ActiveRecord::Schema.define(version: 2019_09_26_002625) do
-
   create_table "bookmarks", force: :cascade do |t|
     t.integer "students_id"
     t.integer "books_id"
@@ -93,18 +91,6 @@ ActiveRecord::Schema.define(version: 2019_09_26_024957) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-  end
-
   create_table "university_library_mappings", force: :cascade do |t|
     t.integer "libraries_id"
     t.integer "universities_id"
@@ -113,9 +99,16 @@ ActiveRecord::Schema.define(version: 2019_09_26_024957) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
     t.string "role"
-    t.string "username"
-    t.string "password"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "book_issue_transactions", "books", column: "books_id"
