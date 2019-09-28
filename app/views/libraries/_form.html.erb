@@ -30,10 +30,11 @@
     <%= form.label :fine_per_day %>
     <%= form.text_field :fine_per_day %>
   </div>
-
-  <%= form.label :university %>
-  <%= select("university", "university_id", University.all.collect{ |c| [ c.name, c.id] }) %>
-
+  
+  <div class="field">
+    <%= form.label :university %>
+    <%= select("library", "university_id", University.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(university_library_mapping) then university_library_mapping.universities_id end) %>
+  </div>
   <div class="actions">
     <%= form.submit %>
   </div>
