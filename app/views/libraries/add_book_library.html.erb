@@ -1,0 +1,16 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Books</h1>
+
+<%= form_tag(put_add_book_library_path, method: :put) do %>
+    <div class="field">
+      <b><%= label_tag 'Book Count' %></b>
+      <%= text_field_tag('library_book_mapping[book_count]', @library_book_mapping.book_count) %>  
+    </div>
+    <br>
+    <div class="actions">
+      <%= submit_tag('Submit') %>
+    </div>
+<% end%>
+
+<%= link_to 'New Book', new_book_path %>

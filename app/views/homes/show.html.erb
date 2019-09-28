@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @profile.name %>
+</p>
+<p>
+  <strong>Email:</strong>
+  <%= @user.email %>
+</p>
+<p>
+  <strong>Type:</strong>
+  <%= @user.role %>
+</p>
+<%if @user.role == 'librarian'%>
+<p>
+  <strong>Library:</strong>
+  <%= @profile.libraries_name %>
+</p>
+<%end%>
+
+<%if @user.role == 'student'%>
+<p>
+  <strong>University:</strong>
+  <%= @profile.university %>
+</p>
+<p>
+  <strong>Eduction Level:</strong>
+  <%= @profile.education_level %>
+</p>
+<%end%>
+
+
+<%= link_to 'Edit', profile_edit_path(@user) %> |
+<%= link_to 'Back', homes_path %>

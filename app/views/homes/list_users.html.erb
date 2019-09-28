@@ -1,0 +1,19 @@
+<table>
+  <thead>
+    <tr>
+      <th colspan="1">Email</th>
+      <th colspan="3">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.email %></td>
+        <td><%= link_to 'Show', profile_path(user.id) %></td>
+        <td><%= link_to 'Edit', profile_edit_path(user)%></td>
+        <%# <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

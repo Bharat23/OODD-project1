@@ -1,4 +1,5 @@
 class UniversitiesController < ApplicationController
+  before_action :is_admin!
   before_action :set_university, only: [:show, :edit, :update, :destroy]
 
   # GET /universities

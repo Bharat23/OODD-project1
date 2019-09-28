@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_26_024957) do
+ActiveRecord::Schema.define(version: 2019_09_26_024927) do
 
   create_table "book_issue_transactions", force: :cascade do |t|
     t.integer "students_id"
@@ -49,7 +49,9 @@ ActiveRecord::Schema.define(version: 2019_09_26_024957) do
   create_table "librarians", force: :cascade do |t|
     t.string "name"
     t.integer "libraries_id"
+    t.integer "users_id"
     t.index ["libraries_id"], name: "index_librarians_on_libraries_id"
+    t.index ["users_id"], name: "index_librarians_on_users_id"
   end
 
   create_table "libraries", force: :cascade do |t|
@@ -103,8 +105,8 @@ ActiveRecord::Schema.define(version: 2019_09_26_024957) do
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
-    t.string "role"
     t.datetime "remember_created_at"
+    t.string "role"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -117,6 +119,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_024957) do
   add_foreign_key "bookmarks", "books", column: "books_id"
   add_foreign_key "bookmarks", "students", column: "students_id"
   add_foreign_key "librarians", "libraries", column: "libraries_id"
+  add_foreign_key "librarians", "users", column: "users_id"
   add_foreign_key "library_book_mappings", "books", column: "books_id"
   add_foreign_key "library_book_mappings", "libraries", column: "libraries_id"
   add_foreign_key "students", "users", column: "users_id"

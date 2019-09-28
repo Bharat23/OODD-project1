@@ -1,0 +1,21 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Dashboard</h1>
+
+<h3>My Actions</h3>
+<div>
+  <% if current_user.role == 'admin' %>
+    <%= link_to 'Show Librarians', user_list_path('librarian') %>
+    <br>
+    <%= link_to 'Show All Libraries', libraries_path %>
+    <br>
+    <%= link_to 'Show All Universities', universities_path %>
+    <br>
+  <% end %>
+  <%= link_to 'Show Students', user_list_path('student') %>
+  <br>
+  <%= link_to 'Show All Books', books_path %>
+</div>
+
+
+<%# <%= link_to 'New Home', new_home_path %>

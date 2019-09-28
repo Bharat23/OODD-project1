@@ -1,0 +1,31 @@
+<%= form_with( local: true) do |form| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this home from being saved:</h2>
+
+      <ul>
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+<% end %>
+
+<%if user.role == 'librarian'%>
+<%= form_tag(profile_update_path, method: :put) do %>
+    <div class="field">
+      <b><%= label_tag 'Name' %></b>
+      <%= text_field_tag('librarian[name]', profile.name) %>  
+    </div>
+    <div>
+      <b><%= label_tag 'Library' %></b>
+      <%= select("librarian", "libraries_id", Library.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(librarian) then librarian.libraries_id end) %>
+    </div>
+    <br>
+    <div class="actions">
+      <%= submit_tag('Submit') %>
+    </div>
+<% end%>
+<%end%>
