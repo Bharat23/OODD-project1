@@ -1,6 +1,6 @@
 class HomesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user, :set_profile, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /homes
   # GET /homes.json
@@ -13,10 +13,11 @@ class HomesController < ApplicationController
     if current_user.role == 'admin'
       @users = User.where('role = ?', params[:type])
     elsif current_user.role == 'librarian'
-      @users = User.where('role = ?', params[:type])
-      # @users = @users.select { |user| 
-      #   # UniversityLibraryMapping.where('universities_id = ? and libraries_id = ?', @librarian.libraries_id)
-      # }
+      university_id_list = UniversityLibraryMapping.select('universities_id').where('libraries_id = ?', current_user.libraries_id)
+      universities_id = university_id_list.map { |id|
+        id.universities_id
+      }
+      @users = User.where('role = ? and universities_id = ?', params[:type], universities_id)
     end
   end
 
@@ -54,14 +55,18 @@ class HomesController < ApplicationController
   # PATCH/PUT /homes/1.json
   def update
     respond_to do |format|
-      librarian_params_filtered = {
-        id: @librarian.id,
-        name: librarian_params[:name],
-        libraries_id: librarian_params[:libraries_id],
-        users_id: @librarian.users_id
+      @user = User.find(params[:id])
+      cols = {
+        name: params[:user][:name]
       }
-      if @librarian.update(librarian_params_filtered)
-        format.html { redirect_to '/', notice: 'Librarian profile was successfully updated.' }
+      if @user.role == 'librarian'
+        cols['libraries_id'] = params[:user][:libraries_id]
+      elsif @user.role == 'student'
+        cols['universities_id'] = params[:user][:universities_id]
+        cols['educational_level'] = params[:user][:educational_level]
+      end
+      if @user.update_attributes(cols)
+        format.html { redirect_to '/', notice: 'Your profile was successfully updated.' }
         format.json { render :show, status: :ok, location: @librarian }
       else
         format.html { render :edit }
@@ -82,9 +87,36 @@ class HomesController < ApplicationController
   def destroy
     @user.destroy
     respond_to do |format|
-      format.html { redirect_to homes_url, notice: 'Home was successfully destroyed.' }
+      format.html { redirect_to homes_url, notice: 'User was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def new_user_by_admin
+  end
+
+  def create_user_by_admin
+    puts params
+    user_params = {
+      name: params[:name],
+      email: params[:email],
+      password: params[:password],
+      password_confirmation: params[:password_confirmation],
+      role: params[:role],
+      is_approved: 1
+    }
+    @new_user = User.new(user_params)
+    
+    respond_to do |format|
+      if @new_user.save
+        format.html { redirect_to '/', notice: 'New user created successfully.' }
+        format.json { render :show, status: :ok, location: @new_user }
+      else
+        format.html { redirect_to :edit }
+        format.json { render :show, status: :ok, location: @new_user }
+      end
+    end
+
   end
 
   private
@@ -92,24 +124,17 @@ class HomesController < ApplicationController
     def set_user
       @user = User.find(params[:id])
       if @user.role == 'librarian'
-        @user_library = Library.find(@user.libraries_id) 
+        if @user.libraries_id
+          @user_library = Library.find(@user.libraries_id) 
+        else
+          @user_library = Library.new
+        end
       elsif @user.role == 'student'
-        @user_university = University.find(@user.universities_id) 
-      end
-    end
-
-    def set_profile
-      id = params[:id]
-      if @user.role == 'librarian'
-        @profile = Librarian
-                  .joins('join libraries on libraries.id = librarians.libraries_id')
-                  .where('users_id = ?', id)
-                  .select('librarians.*, libraries.name as libraries_name')
-                  .first
-      else
-        # @profile = Student
-        #           .where('users_id = ?', id)
-        #           .first
+        if (@user.universities_id)
+          @user_university = University.find(@user.universities_id) 
+        else
+          @user_university = University.new
+        end
       end
     end
 

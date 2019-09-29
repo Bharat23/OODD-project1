@@ -1,0 +1,37 @@
+<h2>Create User</h2>
+
+<%= form_tag(:create_user_by_admin, method: :post) do %>
+    <div class="field">
+      <%= label_tag :name %><br />
+      <%= text_field_tag :name, '',autofocus: true, autocomplete: "name" %>
+    </div>
+
+    <div class="field">
+      <%= label_tag :email %><br />
+      <%= email_field_tag :email, '',autofocus: true, autocomplete: "email" %>
+    </div>
+
+    <div class="field">
+      <%= label_tag :password %>
+      <% if @minimum_password_length %>
+      <em>(<%= @minimum_password_length %> characters minimum)</em>
+      <% end %><br />
+      <%= password_field_tag :password, '',autocomplete: "new-password" %>
+    </div>
+
+    <div class="field">
+      <%= label_tag :password_confirmation %><br />
+      <%= password_field_tag :password_confirmation, '',autocomplete: "new-password" %>
+    </div>
+    <div class="field">
+      <%= label_tag :role %><br />
+      <%= radio_button_tag :role, 'librarian' %> librarian
+      <%= radio_button_tag :role, 'student' %> student
+    </div>
+    <br>
+    <div class="actions">
+      <%= submit_tag('Create User') %>
+    </div>
+<% end%>
+
+
