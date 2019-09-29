@@ -17,11 +17,11 @@
 <%= form_tag(profile_update_path, method: :put) do %>
     <div class="field">
       <b><%= label_tag 'Name' %></b>
-      <%= text_field_tag('librarian[name]', profile.name) %>  
+      <%= text_field_tag('user[name]', user.name) %>  
     </div>
     <div>
       <b><%= label_tag 'Library' %></b>
-      <%= select("librarian", "libraries_id", Library.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(librarian) then librarian.libraries_id end) %>
+      <%= select("user", "libraries_id", Library.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(librarian) then librarian.libraries_id end) %>
     </div>
     <br>
     <div class="actions">

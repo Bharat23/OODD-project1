@@ -1,6 +1,6 @@
 <h1>Editing <%= @user.role %></h1>
 
-<%= render 'form', user: @user, profile: @profile, librarian: @librarian %>
+<%= render 'form', user: @user %>
 
 <%= link_to 'Show', profile_path(@user.id) %> |
 <%= link_to 'Back', homes_path %>

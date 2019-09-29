@@ -15,6 +15,12 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
       t.datetime :remember_created_at
 
       t.string :role
+      t.string :name
+      t.references :universities, foreign_key: true
+      t.references :libraries, foreign_key: true
+      t.string "educational_level"
+      t.integer "borrowing_limit", default: 0
+      t.integer "is_approved", default: 0
 
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false

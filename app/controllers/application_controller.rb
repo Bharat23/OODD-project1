@@ -5,21 +5,28 @@ class ApplicationController < ActionController::Base
             email: 'bsinha2@ncsu.edu', 
             password: '123456', 
             password_confirmation: '123456',
-            role: 'admin'
+            role: 'admin',
+            name: 'Bharat Sinha'
           )
         user.save!
         user = User.new(
             email: 'new@email.edu', 
             password: '123456', 
             password_confirmation: '123456',
-            role: 'librarian'
+            role: 'librarian',
+            name: 'Ankit Manendra',
+            libraries_id: 1
           )
         user.save!
         user = User.new(
             email: 'student@email.edu', 
             password: '123456', 
             password_confirmation: '123456',
-            role: 'student'
+            role: 'student',
+            name: 'Ishan Awasthi',
+            universities_id: 1,
+            educational_level: 'Masters',
+            borrowing_limit: 10
           )
         user.save!
         redirect_to '/'
