@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
-  before_action :configure_sign_up_params, :specify_role, only: [:create]
+  before_action :configure_sign_up_params, only: [:create]
   before_action :configure_account_update_params, only: [:update]
 
   def specify_role
@@ -17,7 +17,17 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/sign_up
   def new
-    super
+    puts '================='
+    if user_signed_in?
+      puts '----------------------'
+      if current_user.role == 'admin'
+        puts 'adsadasdasdsa'
+      else
+        super
+      end
+    else
+      super
+    end
   end
 
   # POST /resource
@@ -55,16 +65,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    puts '==================='
-    puts :sign_up.inspect
-    puts :attribute.inspect
-    puts '===================?'
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute, :role])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute, :role, :name])
   end
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:attribute, :role])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:attribute, :role, :name])
   end
 
   # The path used after sign up.

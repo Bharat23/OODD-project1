@@ -21,7 +21,7 @@
     </div>
     <div>
       <b><%= label_tag 'Library' %></b>
-      <%= select("user", "libraries_id", Library.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(librarian) then librarian.libraries_id end) %>
+      <%= select("user", "libraries_id", Library.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(user) then user.libraries_id end) %>
     </div>
     <br>
     <div class="actions">
@@ -29,3 +29,25 @@
     </div>
 <% end%>
 <%end%>
+
+<%if user.role == 'student'%>
+<%= form_tag(profile_update_path, method: :put) do %>
+    <div class="field">
+      <b><%= label_tag 'Name' %></b>
+      <%= text_field_tag('user[name]', user.name) %>  
+    </div>
+    <div class="field">
+      <b><%= label_tag 'University' %></b>
+      <%= select("user", "universities_id", University.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(user) then user.universities_id end) %>
+    </div>
+    <div class="field">
+      <b><%= label_tag 'University' %></b>
+      <%= select("user", "educational_level", ['Undergrad', 'Masters', 'PhD'].collect{ |c| [ c, c] }, :selected => if defined?(user) then user.educational_level end) %>
+    </div>
+    <br>
+    <div class="actions">
+      <%= submit_tag('Submit') %>
+    </div>
+<% end%>
+<% end%>
+

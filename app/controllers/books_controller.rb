@@ -21,7 +21,6 @@ class BooksController < ApplicationController
     if current_user.role == 'librarian'
       @books = Book.all
     end
-    # BookIssueMailer.welcome_email.deliver_now
   end
 
   # GET /books/1
