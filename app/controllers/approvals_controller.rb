@@ -2,7 +2,7 @@ class ApprovalsController < ApplicationController
     before_action :is_admin!
 
     def list_user_signup_approval
-        @user_for_approval = User.where('role = "librarian" and is_approved = 0')
+        @user_for_approval = User.where("role = ? and is_approved = ?", 'librarian', 0)
     end
 
     def approve_reject_signup
