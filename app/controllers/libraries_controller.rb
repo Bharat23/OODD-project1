@@ -1,6 +1,7 @@
 class LibrariesController < ApplicationController
   # before_action :is_admin!
   before_action :set_library, only: [:show, :edit, :update, :destroy]
+  before_action :is_librarian!, only: [:add_book_library, :add_update_book_library]
 
   # GET /libraries
   # GET /libraries.json
@@ -54,27 +55,17 @@ class LibrariesController < ApplicationController
   # GET 
   def add_book_library
     book_id = params[:book_id]
-    librarian_obj = Librarian.select('librarians.libraries_id as libraries_id').where('users_id = ?', current_user.id).first
-    libraries_id = librarian_obj.libraries_id
+    libraries_id = current_user.libraries_id
     books = LibraryBookMapping.where('libraries_id = ? and books_id = ?', libraries_id, book_id).first
     if books == nil
-      puts 'hererererererererre'
-      # book doesn't exist
-      # @library_book_mapping = {
-      #   libraries_id: libraries_id,
-      #   books_id: book_id,
-      #   book_count: 0
-      # }
       @library_book_mapping = LibraryBookMapping.new
     else
-      puts 'not hehehehehehhehe'
       @library_book_mapping = books
     end
   end
 
   def add_update_book_library
-    librarian_obj = Librarian.select('librarians.libraries_id as libraries_id').where('users_id = ?', current_user.id).first
-    libraries_id = librarian_obj.libraries_id
+    libraries_id = current_user.libraries_id
     book_count = params[:library_book_mapping][:book_count]
     book_id = params[:book_id]
     books = LibraryBookMapping.where('libraries_id = ? and books_id = ?', libraries_id, book_id).first

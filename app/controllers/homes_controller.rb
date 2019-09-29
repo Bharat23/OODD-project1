@@ -91,19 +91,11 @@ class HomesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_user
       @user = User.find(params[:id])
-      if (@user.role == 'librarian')
-        set_librarian()
-      elsif (@user.role == 'student')
-        set_student()
+      if @user.role == 'librarian'
+        @user_library = Library.find(@user.libraries_id) 
+      elsif @user.role == 'student'
+        @user_university = University.find(@user.universities_id) 
       end
-    end
-
-    def set_librarian
-      @librarian = Librarian.where('users_id = ?', params[:id]).first
-    end
-
-    def set_student
-      @librarian = Librarian.find(params[:id])
     end
 
     def set_profile

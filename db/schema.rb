@@ -46,14 +46,6 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
     t.boolean "special_collection"
   end
 
-  create_table "librarians", force: :cascade do |t|
-    t.string "name"
-    t.integer "libraries_id"
-    t.integer "users_id"
-    t.index ["libraries_id"], name: "index_librarians_on_libraries_id"
-    t.index ["users_id"], name: "index_librarians_on_users_id"
-  end
-
   create_table "libraries", force: :cascade do |t|
     t.string "name"
     t.string "location"
@@ -67,15 +59,6 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
     t.integer "book_count"
     t.index ["books_id"], name: "index_library_book_mappings_on_books_id"
     t.index ["libraries_id"], name: "index_library_book_mappings_on_libraries_id"
-  end
-
-  create_table "students", force: :cascade do |t|
-    t.integer "users_id"
-    t.string "name"
-    t.string "university"
-    t.string "educational_level"
-    t.integer "borrowing_limit"
-    t.index ["users_id"], name: "index_students_on_users_id"
   end
 
   create_table "transaction_logs", force: :cascade do |t|
@@ -107,10 +90,18 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.string "role"
+    t.string "name"
+    t.integer "universities_id"
+    t.integer "libraries_id"
+    t.string "educational_level"
+    t.integer "borrowing_limit", default: 0
+    t.integer "is_approved", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["libraries_id"], name: "index_users_on_libraries_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["universities_id"], name: "index_users_on_universities_id"
   end
 
   add_foreign_key "book_issue_transactions", "books", column: "books_id"
@@ -118,13 +109,12 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
   add_foreign_key "book_issue_transactions", "students", column: "students_id"
   add_foreign_key "bookmarks", "books", column: "books_id"
   add_foreign_key "bookmarks", "students", column: "students_id"
-  add_foreign_key "librarians", "libraries", column: "libraries_id"
-  add_foreign_key "librarians", "users", column: "users_id"
   add_foreign_key "library_book_mappings", "books", column: "books_id"
   add_foreign_key "library_book_mappings", "libraries", column: "libraries_id"
-  add_foreign_key "students", "users", column: "users_id"
   add_foreign_key "transaction_logs", "books", column: "books_id"
   add_foreign_key "transaction_logs", "students", column: "students_id"
   add_foreign_key "university_library_mappings", "libraries", column: "libraries_id"
   add_foreign_key "university_library_mappings", "universities", column: "universities_id"
+  add_foreign_key "users", "libraries", column: "libraries_id"
+  add_foreign_key "users", "universities", column: "universities_id"
 end

@@ -2,7 +2,7 @@
 
 <p>
   <strong>Name:</strong>
-  <%= @profile.name %>
+  <%= @user.name %>
 </p>
 <p>
   <strong>Email:</strong>
@@ -15,18 +15,18 @@
 <%if @user.role == 'librarian'%>
 <p>
   <strong>Library:</strong>
-  <%= @profile.libraries_name %>
-</p>
+  <%= @user_library.name %>
+</p> 
 <%end%>
 
 <%if @user.role == 'student'%>
 <p>
   <strong>University:</strong>
-  <%= @profile.university %>
+  <%= @user_university.name %>
 </p>
 <p>
   <strong>Eduction Level:</strong>
-  <%= @profile.education_level %>
+  <%= @user.educational_level %>
 </p>
 <%end%>
 
