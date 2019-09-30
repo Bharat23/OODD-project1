@@ -39,7 +39,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/edit
   def edit
-    super
+    puts 'sadasdsadsaddasdasdasdasdsad'
+    # super
   end
 
   # PUT /resource

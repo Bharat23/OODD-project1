@@ -33,9 +33,9 @@ class ApplicationController < ActionController::Base
     end
 
     protected
-    def authenticate_user!
+    def authenticated_user!
         if user_signed_in?
-            super
+            authenticate_user!
         else
             redirect_to new_user_session_path, :notice => 'Please login first'
             ## if you want render 404 page

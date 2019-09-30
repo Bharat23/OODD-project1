@@ -1,5 +1,5 @@
 class HomesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticated_user!
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /homes
@@ -116,6 +116,12 @@ class HomesController < ApplicationController
         format.json { render :show, status: :ok, location: @new_user }
       end
     end
+
+  def new_update_password
+  end
+
+  def create_update_password
+  end
 
   end
 
