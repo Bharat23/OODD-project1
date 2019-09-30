@@ -40,7 +40,7 @@
     <%= form.label :edition %>
     <%= form.number_field :edition %>
   </div>
-
+  
   <div class="field">
     <%= form.label :front_cover_img %>
     <%= form.file_field :front_cover_img, :accept => 'image/*' %>
@@ -60,6 +60,13 @@
     <%= form.label :special_collection %>
     <%= form.check_box :special_collection %>
   </div>
+
+  <% if current_user.role == 'librarian' %>
+    <div class="field">
+      <%= form.label :book_count %>
+      <%= form.text_field :book_count %>
+    </div>
+  <% end %>
 
   <div class="actions">
     <%= form.submit %>

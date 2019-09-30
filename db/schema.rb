@@ -44,6 +44,9 @@ ActiveRecord::Schema.define(version: 2019_09_26_024842) do
     t.string "subject"
     t.text "summary"
     t.boolean "special_collection"
+    t.integer "libraries_id"
+    t.integer "book_count"
+    t.index ["libraries_id"], name: "index_books_on_libraries_id"
   end
 
   create_table "libraries", force: :cascade do |t|
@@ -104,6 +107,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_024842) do
   add_foreign_key "book_issue_transactions", "users", column: "users_id"
   add_foreign_key "bookmarks", "books", column: "books_id"
   add_foreign_key "bookmarks", "users", column: "users_id"
+  add_foreign_key "books", "libraries", column: "libraries_id"
   add_foreign_key "libraries", "universities", column: "universities_id"
   add_foreign_key "library_book_mappings", "books", column: "books_id"
   add_foreign_key "library_book_mappings", "libraries", column: "libraries_id"

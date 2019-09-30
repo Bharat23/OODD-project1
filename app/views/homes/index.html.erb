@@ -29,10 +29,16 @@
     <% else %>
       <%= link_to 'Show Students', user_list_path('student') %>
       <br>
-      <%= link_to 'Show All Books', books_path %>
+      <%= link_to 'Show Available Books', books_path + '?listtype=available' %>
+      <br>
+      <%= link_to 'Show Library Books', books_path + '?listtype=my' %>
       <br>
       <%= link_to 'View My Library', library_path(current_user.libraries_id) %>
     <% end %>
+  <% end %>
+  <% if current_user.role == 'student' %>
+    <%= link_to 'Show Available Books', books_path + '?listtype=available' %>
+    <br>
   <% end %>
 </div>
 
