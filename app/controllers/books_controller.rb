@@ -97,6 +97,26 @@ class BooksController < ApplicationController
     end
   end
 
+  def bookmark
+    book_id = params[:id]
+    user_id = current_user.id
+    bookmark = Bookmark.where('books_id = ? and users_id =?', book_id,user_id)
+    params_filtered = { users_id: user_id, books_id: book_id}
+    @bookmarks = Bookmark.new(params_filtered)
+    respond_to do |format|
+      if bookmark.exists?
+        format.html { redirect_to request.referrer , notice: 'Bookmark already saved.' }
+        format.json { render :show, status: :created, location: @library }
+      else
+        @bookmarks.save
+        format.html { redirect_to request.referrer,notice:'Created Bookmark' }
+        format.json { render json: @library.errors, status: :unprocessable_entity }
+      end
+    end
+
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_book
