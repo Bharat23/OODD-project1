@@ -5,6 +5,7 @@ class CreateLibraries < ActiveRecord::Migration[6.0]
       t.string "location"
       t.integer "borrow_duration"
       t.float "fine_per_day"
+      t.references :universities, foreign_key: true
     end
   end
 end

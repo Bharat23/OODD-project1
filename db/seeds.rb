@@ -6,23 +6,6 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-User.create([
-    {
-        email: 'bsinha2@ncsu.edu',
-        encrypted_password: '$2a$11$goH1KszwZBFtTF.8ClKZm.WLdsu9B1N.Nu9tAWpCHAyX4upgwoYuq',
-        role: 'admin'
-    },
-    {
-        email: 'tanvi@ncsu.edu',
-        encrypted_password: '$2a$11$goH1KszwZBFtTF.8ClKZm.WLdsu9B1N.Nu9tAWpCHAyX4upgwoYuq',
-        role: 'librarian'
-    },
-    {
-        email: 'vishva@ncsu.edu',
-        encrypted_password: '$2a$11$goH1KszwZBFtTF.8ClKZm.WLdsu9B1N.Nu9tAWpCHAyX4upgwoYuq',
-        role: 'student'
-    },
-]);
 
 Book.create([
     {
@@ -604,16 +587,5 @@ Library.create([
         location: 'Hillsborough Street',
         borrow_duration: 10,
         fine_per_day: 3
-    }
-]);
-
-UniversityLibraryMapping.create([
-    {
-        libraries_id: 1,
-        universities_id: 1
-    },
-    {
-        libraries_id: 2,
-        universities_id: 1
     }
 ]);
