@@ -10,7 +10,7 @@ class BooksController < ApplicationController
     if (type == 'date_published')
       @books = Book.where(type + ' = ?', keyword)
     else
-      @books = Book.where(type + ' ilike ?', '%'+keyword+'%')
+      @books = Book.where('lower('+ type +') like ?', '%'+keyword+'%')
     end
   end
 
@@ -19,7 +19,26 @@ class BooksController < ApplicationController
   def index
     @books = Book.all
     if current_user.role == 'librarian'
-      @books = Book.all
+      listtype = params[:listtype]
+      if listtype == 'available'
+        @books = Book.where('libraries_id is null')
+      else
+        @books = Book.where('libraries_id = ?', current_user.libraries_id)
+      end
+    elsif current_user.role == 'student'
+        library_list = Library.where('universities_id = ?', current_user.universities_id)
+        puts library_list.inspect
+        lib = library_list.map { |l|
+          l.id
+        }
+        @books = Book.where('libraries_id is not null')
+        @books.select { |book| 
+          if lib.include?(book.libraries_id)
+            return true
+          else
+            return false
+          end
+        }
     end
   end
 
@@ -86,13 +105,20 @@ class BooksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def book_params
-      params.require(:book).permit(:isbn, :title, :author, :language, :date_published, :edition, :front_cover_img, :subject, :summary, :special_collection)
+      params.require(:book).permit(:isbn, :title, :author, :language, :date_published, :edition, :front_cover_img, :subject, :summary, :special_collection, :book_count)
     end
 
     def convert_image(book_params)
       book_params_copy = book_params
       img = book_params_copy['front_cover_img']
-      book_params_copy['front_cover_img'] = 'data:' + book_params['front_cover_img'].content_type + ';base64,' + Base64.encode64(img.open.read);
+      if img
+        book_params_copy['front_cover_img'] = 'data:' + book_params['front_cover_img'].content_type + ';base64,' + Base64.encode64(img.open.read);
+      else
+        book_params_copy['front_cover_img'] = @book.front_cover_img
+      end
+      if current_user.role == 'librarian'
+        book_params_copy['libraries_id'] = current_user.libraries_id
+      end
       book_params_copy
     end
 end

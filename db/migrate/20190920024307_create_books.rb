@@ -11,6 +11,8 @@ class CreateBooks < ActiveRecord::Migration[6.0]
       t.string :subject
       t.text :summary
       t.boolean :special_collection
+      t.references :libraries, foreign_key: true
+      t.integer "book_count"
     end
   end
 end

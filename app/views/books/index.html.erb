@@ -1,8 +1,8 @@
 <p id="notice"><%= notice %></p>
 
 <h1>Books</h1>
-<%= render 'searchform', :locals => @books %>
-<table>
+<%# <%= render 'searchform', :locals => @books %>
+<table id="myTable">
   <thead>
     <tr>
       <th>Isbn</th>
@@ -15,7 +15,11 @@
       <th>Subject</th>
       <th>Summary</th>
       <th>Special collection</th>
-      <th colspan="3"></th>
+      <th></th>
+      <% if current_user.role != 'student' %>
+        <th></th>
+        <th></th>
+      <% end %>
     </tr>
   </thead>
 
@@ -32,9 +36,12 @@
         <td><%= book.subject %></td>
         <td><%= book.summary %></td>
         <td><%= book.special_collection %></td>
-        <td><%= link_to 'Show', book %></td>
-        <td><%= link_to 'Edit', edit_book_path(book) %></td>
-        <td><%= link_to 'Destroy', book, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', book%></td>
+        <% if current_user.role != 'student' %>
+          <td><%= link_to 'Edit', edit_book_path(book)%></td>
+          <td><%= link_to 'Destroy', book, method: :delete, data: { confirm: 'Are you sure?' }  %></td>
+        <% end %>
+
       </tr>
     <% end %>
   </tbody>
@@ -42,4 +49,8 @@
 
 <br>
 
-<%= link_to 'New Book', new_book_path %>
+<% if current_user.role != 'student' %>
+  <%= link_to 'New Book', new_book_path %>
+<% end %>
+
+

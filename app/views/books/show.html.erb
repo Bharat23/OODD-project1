@@ -51,7 +51,7 @@
 </p>
 
 <% if current_user.role == 'librarian' %>
-<%= link_to 'Add To Library', add_book_library_path(@book) %> |
+<%# <%= link_to 'Add To Library', add_book_library_path(@book) %>
 <% end %>
 <% if current_user.role != 'student' %>
   <%= link_to 'Edit', edit_book_path(@book) %> |
