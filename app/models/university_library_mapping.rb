@@ -1,2 +1,0 @@
-class UniversityLibraryMapping < ApplicationRecord
-end

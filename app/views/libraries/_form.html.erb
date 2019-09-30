@@ -33,7 +33,7 @@
   
   <div class="field">
     <%= form.label :university %>
-    <%= select("library", "university_id", University.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(university_library_mapping) then university_library_mapping.universities_id end) %>
+    <%= select("library", "university_id", University.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(library) then library.universities_id end) %>
   </div>
   <div class="actions">
     <%= form.submit %>

@@ -13,10 +13,8 @@ class HomesController < ApplicationController
     if current_user.role == 'admin'
       @users = User.where('role = ?', params[:type])
     elsif current_user.role == 'librarian'
-      university_id_list = UniversityLibraryMapping.select('universities_id').where('libraries_id = ?', current_user.libraries_id)
-      universities_id = university_id_list.map { |id|
-        id.universities_id
-      }
+      library_obj = Library.find(current_user.libraries_id)
+      universities_id = library_obj.universities_id
       @users = User.where('role = ? and universities_id = ?', params[:type], universities_id)
     end
   end
