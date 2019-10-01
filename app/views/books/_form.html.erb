@@ -13,17 +13,17 @@
 
   <div class="field">
     <%= form.label :isbn %>
-    <%= form.text_field :isbn %>
+    <%= form.text_field :isbn, :required => true %>
   </div>
 
   <div class="field">
     <%= form.label :title %>
-    <%= form.text_field :title %>
+    <%= form.text_field :title, :required => true %>
   </div>
 
   <div class="field">
     <%= form.label :author %>
-    <%= form.text_field :author %>
+    <%= form.text_field :author, :required => true %>
   </div>
 
   <div class="field">
@@ -33,7 +33,7 @@
 
   <div class="field">
     <%= form.label :date_published %>
-    <%= form.date_select :date_published, :start_year => 1900 %>
+    <%= form.date_select :date_published, :start_year => 1900, :required => true %>
   </div>
 
   <div class="field">

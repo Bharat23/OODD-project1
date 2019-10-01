@@ -1,2 +1,0 @@
-class Librarian < ApplicationRecord
-end
