@@ -1,0 +1,2 @@
+class BookIssueTransaction < ApplicationRecord
+end

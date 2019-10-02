@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   # seed doesn't work for user tables
   match '/config/createusers/' => 'application#setup_users', :via => :get
   match '/books/bookmark/:id' => 'books#bookmark',:via => :post, as: :bookmark
+  match '/books/checkout/:id' => 'books#checkout', :via => :put, as: :checkout
   root to: "homes#index"
   # end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

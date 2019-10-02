@@ -25,9 +25,13 @@
   <%= @user_university.name %>
 </p>
 <p>
-  <strong>Eduction Level:</strong>
+  <strong>Education Level:</strong>
   <%= @user.educational_level %>
 </p>
+  <p>
+    <strong> Borrowing Limit</strong>
+    <%= @user.borrowing_limit %>
+  </p>
 <%end%>
 
 <%= link_to 'Change Password', edit_user_registration_path %> |

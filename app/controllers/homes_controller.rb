@@ -38,6 +38,8 @@ class HomesController < ApplicationController
   def create
     @home = Home.new(home_params)
 
+    puts @home.
+`
     respond_to do |format|
       if @home.save
         format.html { redirect_to @home, notice: 'Home was successfully created.' }
@@ -62,6 +64,11 @@ class HomesController < ApplicationController
       elsif @user.role == 'student'
         cols['universities_id'] = params[:user][:universities_id]
         cols['educational_level'] = params[:user][:educational_level]
+        cols['borrowing_limit'] = if params[:user][:educational_level] == 'Undergrad'
+                                    2
+                                  else
+                                    params[:user][:educational_level] == 'Masters' ? 4 : 6
+                                  end
       end
       if @user.update_attributes(cols)
         format.html { redirect_to '/', notice: 'Your profile was successfully updated.' }
