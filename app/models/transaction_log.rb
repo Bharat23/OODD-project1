@@ -1,0 +1,2 @@
+class TransactionLog < ApplicationRecord
+end

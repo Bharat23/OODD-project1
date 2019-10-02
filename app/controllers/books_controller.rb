@@ -27,19 +27,19 @@ class BooksController < ApplicationController
       end
     elsif current_user.role == 'student'
         library_list = Library.where('universities_id = ?', current_user.universities_id)
-        puts library_list.inspect
+        puts library_list
         lib = library_list.map { |l|
           l.id
         }
         @books = Book.where('libraries_id is not null')
-        @books.select { |book| 
+        @books.select { |book|
           if lib.include?(book.libraries_id)
             return true
           else
             return false
           end
         }
-    end
+end
   end
 
   # GET /books/1
@@ -109,13 +109,89 @@ class BooksController < ApplicationController
         format.json { render :show, status: :created, location: @library }
       else
         @bookmarks.save
-        format.html { redirect_to request.referrer,notice:'Created Bookmark' }
+        format.html { redirect_to request.referrer, notice:'Created Bookmark' }
         format.json { render json: @library.errors, status: :unprocessable_entity }
       end
     end
 
   end
 
+  def checkout
+    book_id = params[:id]
+    libraries_id = current_user.libraries_id
+    user_id = current_user.id
+    if check_user_limit(user_id)
+      action_log  = 1 # Reached max borrowing limit
+      respond_to do |format|
+        format.html { redirect_to request.referrer , notice: 'Reached maximimum issue limit' }
+        format.json { render json: @library.errors, status: :unprocessable_entity }
+      end
+    else
+      if is_special_collection?
+        action_log = 2 # Librarian approval needed since it is special collection book
+        respond_to do |format|
+          format.html { redirect_to request.referrer , notice: 'The Book needs Librarian approval. Thank you for patience!' }
+          format.json { render json: @library.errors, status: :unprocessable_entity }
+        end
+      else
+      if !book_available_for_issue(book_id, libraries_id)
+        action_log= 3 # No book available for issue
+        respond_to do |format|
+          format.html { redirect_to request.referrer , notice: 'No Book currently available' }
+          format.json { render json: @library.errors, status: :unprocessable_entity }
+        end
+      else
+      if user_checked_out(book_id, libraries_id, user_id)
+        respond_to do |format|
+          format.html { redirect_to request.referrer , notice: 'Already Issued ' }
+          format.json { render json: @library.errors, status: :unprocessable_entity }
+        end
+      else
+          action_log = 4 # Book issued
+          book_specified_library= LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)
+          library_book_count = book_specified_library[0]
+          respond_to do |format|
+            if book_specified_library == 0
+              format.html { redirect_to request.referrer , notice: 'Book is not available in this library' }
+              format.json { render json: @library.errors, status: :unprocessable_entity }
+            else
+              book_count = Book.find(book_id).book_count
+              book_count = book_count-1
+              library_book_count = library_book_count - 1
+              @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id).save
+              @update_library_mapping = LibraryBookMapping.where(books_id: book_id , libraries_id: libraries_id).update( book_count: library_book_count)
+              @update_books_count = Book.where(id: book_id).update(book_count: book_count)
+              format.html { redirect_to books_url   , notice:'Book Checked out Successfully' }
+              format.json { render :show, status: :created, location: @library }
+            end
+          end
+        end
+      end
+      end
+    end
+    @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: action_log, timestamp_of_action: DateTime.now).save
+  end
+
+  def user_checked_out(book_id, libraries_id, user_id)
+    return BookIssueTransaction.exists?(users_id: user_id, books_id: book_id, libraries_id: libraries_id)
+  end
+
+  def check_user_limit(user_id)
+    user_id = current_user.id
+    issued_book_count = BookIssueTransaction.where(:users_id => user_id).count
+    borrowing_limit = User.where('id = ?',user_id).pluck(:borrowing_limit)
+    return issued_book_count == borrowing_limit[0] ? true : false
+  end
+
+  def is_special_collection?(book_id)
+    return Book.find(book_id).special_collection
+  end
+
+  def book_available_for_issue(book_id,libraries_id)
+    issued_book_count = BookIssueTransaction.where('books_id =? and libraries_id =?',book_id,libraries_id).count
+    total_book_count = LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)[0]
+    return issued_book_count < total_book_count ? true : false
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
