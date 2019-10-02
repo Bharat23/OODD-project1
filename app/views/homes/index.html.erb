@@ -38,6 +38,7 @@
   <% end %>
   <% if current_user.role == 'student' %>
     <%= link_to 'Show Available Books', books_path + '?listtype=available' %>
+    <%= link_to 'View Bookmarks', view_bookmark_path, :method => :get %>
     <br>
   <% end %>
 </div>
