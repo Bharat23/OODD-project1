@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-    before_filter :authenticate_user!
+
     def setup_users
         user = User.new(
             email: 'bsinha2@ncsu.edu', 
@@ -33,7 +33,15 @@ class ApplicationController < ActionController::Base
     end
 
     protected
-
+    def authenticated_user!
+        if user_signed_in?
+            authenticate_user!
+        else
+            redirect_to new_user_session_path, :notice => 'Please login first'
+            ## if you want render 404 page
+            ## render :file => File.join(Rails.root, 'public/404'), :formats => [:html], :status => 404, :layout => false
+        end
+    end
 
     def is_admin!
         if user_signed_in?

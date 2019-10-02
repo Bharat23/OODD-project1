@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_26_024927) do
+ActiveRecord::Schema.define(version: 2019_09_26_024842) do
 
   create_table "book_issue_transactions", force: :cascade do |t|
-    t.integer "students_id"
+    t.integer "users_id"
     t.integer "books_id"
     t.integer "libraries_id"
     t.string "status"
@@ -23,14 +23,14 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
     t.float "fine_amount"
     t.index ["books_id"], name: "index_book_issue_transactions_on_books_id"
     t.index ["libraries_id"], name: "index_book_issue_transactions_on_libraries_id"
-    t.index ["students_id"], name: "index_book_issue_transactions_on_students_id"
+    t.index ["users_id"], name: "index_book_issue_transactions_on_users_id"
   end
 
   create_table "bookmarks", force: :cascade do |t|
-    t.integer "students_id"
+    t.integer "users_id"
     t.integer "books_id"
     t.index ["books_id"], name: "index_bookmarks_on_books_id"
-    t.index ["students_id"], name: "index_bookmarks_on_students_id"
+    t.index ["users_id"], name: "index_bookmarks_on_users_id"
   end
 
   create_table "books", force: :cascade do |t|
@@ -44,6 +44,9 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
     t.string "subject"
     t.text "summary"
     t.boolean "special_collection"
+    t.integer "libraries_id"
+    t.integer "book_count"
+    t.index ["libraries_id"], name: "index_books_on_libraries_id"
   end
 
   create_table "libraries", force: :cascade do |t|
@@ -51,6 +54,8 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
     t.string "location"
     t.integer "borrow_duration"
     t.float "fine_per_day"
+    t.integer "universities_id"
+    t.index ["universities_id"], name: "index_libraries_on_universities_id"
   end
 
   create_table "library_book_mappings", force: :cascade do |t|
@@ -63,24 +68,17 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
 
   create_table "transaction_logs", force: :cascade do |t|
     t.integer "books_id"
-    t.integer "students_id"
+    t.integer "users_id"
     t.string "action"
     t.datetime "timestamp_of_action"
     t.index ["books_id"], name: "index_transaction_logs_on_books_id"
-    t.index ["students_id"], name: "index_transaction_logs_on_students_id"
+    t.index ["users_id"], name: "index_transaction_logs_on_users_id"
   end
 
   create_table "universities", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "university_library_mappings", force: :cascade do |t|
-    t.integer "libraries_id"
-    t.integer "universities_id"
-    t.index ["libraries_id"], name: "index_university_library_mappings_on_libraries_id"
-    t.index ["universities_id"], name: "index_university_library_mappings_on_universities_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -106,15 +104,15 @@ ActiveRecord::Schema.define(version: 2019_09_26_024927) do
 
   add_foreign_key "book_issue_transactions", "books", column: "books_id"
   add_foreign_key "book_issue_transactions", "libraries", column: "libraries_id"
-  add_foreign_key "book_issue_transactions", "students", column: "students_id"
+  add_foreign_key "book_issue_transactions", "users", column: "users_id"
   add_foreign_key "bookmarks", "books", column: "books_id"
-  add_foreign_key "bookmarks", "students", column: "students_id"
+  add_foreign_key "bookmarks", "users", column: "users_id"
+  add_foreign_key "books", "libraries", column: "libraries_id"
+  add_foreign_key "libraries", "universities", column: "universities_id"
   add_foreign_key "library_book_mappings", "books", column: "books_id"
   add_foreign_key "library_book_mappings", "libraries", column: "libraries_id"
   add_foreign_key "transaction_logs", "books", column: "books_id"
-  add_foreign_key "transaction_logs", "students", column: "students_id"
-  add_foreign_key "university_library_mappings", "libraries", column: "libraries_id"
-  add_foreign_key "university_library_mappings", "universities", column: "universities_id"
+  add_foreign_key "transaction_logs", "users", column: "users_id"
   add_foreign_key "users", "libraries", column: "libraries_id"
   add_foreign_key "users", "universities", column: "universities_id"
 end

@@ -3,18 +3,43 @@
 <h1>Dashboard</h1>
 
 <h3>My Actions</h3>
+
 <div>
+  <%= link_to 'My Profile', profile_path(current_user.id) %>
+  <br>
   <% if current_user.role == 'admin' %>
+    <%= link_to 'Signup Approval requests', list_user_signup_approval_path %>
+    <br>
     <%= link_to 'Show Librarians', user_list_path('librarian') %>
     <br>
     <%= link_to 'Show All Libraries', libraries_path %>
     <br>
     <%= link_to 'Show All Universities', universities_path %>
     <br>
+    <%= link_to 'Show Students', user_list_path('student') %>
+    <br>
+    <%= link_to 'Show All Books', books_path %>
   <% end %>
-  <%= link_to 'Show Students', user_list_path('student') %>
-  <br>
-  <%= link_to 'Show All Books', books_path %>
+  <% if current_user.role == 'librarian' %>
+    <% if current_user.is_approved == 0 %>
+      <%= 'Your account is not approved yet. You will be notified as soon as you get approved.' %>
+    <% elsif current_user.is_approved == 1 && !current_user.libraries_id %>
+      <%= 'Please update your profile to get unlock you actions.' %>
+      <%= link_to 'Update Profile', profile_path(current_user.id) %>
+    <% else %>
+      <%= link_to 'Show Students', user_list_path('student') %>
+      <br>
+      <%= link_to 'Show Available Books', books_path + '?listtype=available' %>
+      <br>
+      <%= link_to 'Show Library Books', books_path + '?listtype=my' %>
+      <br>
+      <%= link_to 'View My Library', library_path(current_user.libraries_id) %>
+    <% end %>
+  <% end %>
+  <% if current_user.role == 'student' %>
+    <%= link_to 'Show Available Books', books_path + '?listtype=available' %>
+    <br>
+  <% end %>
 </div>
 
 

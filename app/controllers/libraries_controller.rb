@@ -32,19 +32,13 @@ class LibrariesController < ApplicationController
       location: library_params[:location],
       borrow_duration: library_params[:borrow_duration],
       fine_per_day: library_params[:fine_per_day],
+      universities_id: university_id
     }
     @library = Library.new(library_params_filtered)
     respond_to do |format|
       if @library.save
-        library_id = @library.id
-        @university_library_mapping = UniversityLibraryMapping.new({libraries_id: library_id, universities_id: university_id})
-        if @university_library_mapping.save
-          format.html { redirect_to @library, notice: 'Library was successfully created.' }
-          format.json { render :show, status: :created, location: @library }
-        else
-          format.html { render :new }
-          format.json { render json: @university_library_mapping.errors, status: :unprocessable_entity }
-        end
+        format.html { redirect_to @library, notice: 'Library was successfully created.' }
+        format.json { render :show, status: :created, location: @library }
       else
         format.html { render :new }
         format.json { render json: @library.errors, status: :unprocessable_entity }
@@ -99,17 +93,15 @@ class LibrariesController < ApplicationController
   # PATCH/PUT /libraries/1.json
   def update
     respond_to do |format|
-      puts library_params
       university_id = library_params[:university_id]
       library_params_filtered = {
         name: library_params[:name],
         location: library_params[:location],
         borrow_duration: library_params[:borrow_duration],
         fine_per_day: library_params[:fine_per_day],
+        universities_id: university_id
       }
       if @library.update(library_params_filtered)
-        library_id = @library.id
-        @university_library_mapping.update({libraries_id: library_id, universities_id: university_id})
         format.html { redirect_to @library, notice: 'Library was successfully updated.' }
         format.json { render :show, status: :ok, location: @library }
       else
@@ -133,8 +125,11 @@ class LibrariesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_library
       @library = Library.find(params[:id])
-      @university_library_mapping = UniversityLibraryMapping.where('libraries_id = ?', params[:id]).first
-      @university = University.where('id = ?', @university_library_mapping.universities_id).first
+      if @library.universities_id
+        @university = University.find(@library.universities_id)
+      else
+        @university = University.new
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

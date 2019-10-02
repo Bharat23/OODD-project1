@@ -13,27 +13,27 @@
 
   <div class="field">
     <%= form.label :name %>
-    <%= form.text_field :name %>
+    <%= form.text_field :name, :required => true %>
   </div>
 
   <div class="field">
     <%= form.label :location %>
-    <%= form.text_field :location %>
+    <%= form.text_field :location, :required => true %>
   </div>
 
   <div class="field">
     <%= form.label :borrow_duration %>
-    <%= form.number_field :borrow_duration %>
+    <%= form.number_field :borrow_duration, :required => true %>
   </div>
 
   <div class="field">
     <%= form.label :fine_per_day %>
-    <%= form.text_field :fine_per_day %>
+    <%= form.text_field :fine_per_day, :required => true %>
   </div>
   
   <div class="field">
     <%= form.label :university %>
-    <%= select("library", "university_id", University.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(university_library_mapping) then university_library_mapping.universities_id end) %>
+    <%= select("library", "university_id", University.all.collect{ |c| [ c.name, c.id] }, :selected => if defined?(library) then library.universities_id end) %>
   </div>
   <div class="actions">
     <%= form.submit %>

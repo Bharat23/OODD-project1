@@ -13,17 +13,17 @@
 
   <div class="field">
     <%= form.label :isbn %>
-    <%= form.text_field :isbn %>
+    <%= form.text_field :isbn, :required => true %>
   </div>
 
   <div class="field">
     <%= form.label :title %>
-    <%= form.text_field :title %>
+    <%= form.text_field :title, :required => true %>
   </div>
 
   <div class="field">
     <%= form.label :author %>
-    <%= form.text_field :author %>
+    <%= form.text_field :author, :required => true %>
   </div>
 
   <div class="field">
@@ -33,14 +33,14 @@
 
   <div class="field">
     <%= form.label :date_published %>
-    <%= form.date_select :date_published, :start_year => 1900 %>
+    <%= form.date_select :date_published, :start_year => 1900, :required => true %>
   </div>
 
   <div class="field">
     <%= form.label :edition %>
     <%= form.number_field :edition %>
   </div>
-
+  
   <div class="field">
     <%= form.label :front_cover_img %>
     <%= form.file_field :front_cover_img, :accept => 'image/*' %>
@@ -60,6 +60,13 @@
     <%= form.label :special_collection %>
     <%= form.check_box :special_collection %>
   </div>
+
+  <% if current_user.role == 'librarian' %>
+    <div class="field">
+      <%= form.label :book_count %>
+      <%= form.text_field :book_count %>
+    </div>
+  <% end %>
 
   <div class="actions">
     <%= form.submit %>
