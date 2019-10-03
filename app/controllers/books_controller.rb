@@ -148,22 +148,18 @@ end
         end
       else
           action_log = 4 # Book issued
-          book_specified_library= LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)
-          library_book_count = book_specified_library[0]
+          #book_specified_library= LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)
+          #library_book_count = book_specified_library[0]
           respond_to do |format|
-            if book_specified_library == 0
-              format.html { redirect_to request.referrer , notice: 'Book is not available in this library' }
-              format.json { render json: @library.errors, status: :unprocessable_entity }
-            else
               book_count = Book.find(book_id).book_count
               book_count = book_count-1
-              library_book_count = library_book_count - 1
+              #library_book_count = library_book_count - 1
               @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id).save
-              @update_library_mapping = LibraryBookMapping.where(books_id: book_id , libraries_id: libraries_id).update( book_count: library_book_count)
+              #@update_library_mapping = LibraryBookMapping.where(books_id: book_id , libraries_id: libraries_id).update( book_count: library_book_count)
               @update_books_count = Book.where(id: book_id).update(book_count: book_count)
               format.html { redirect_to books_url   , notice:'Book Checked out Successfully' }
               format.json { render :show, status: :created, location: @library }
-            end
+
           end
         end
       end
