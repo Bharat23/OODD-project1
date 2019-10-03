@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   match '/books/book_issued_list/:id' => 'books#book_issued_list', :via => :get , as: :book_issued_list_get
 
   match '/books/borrow-history/:book_id' => 'books#borrow_history', :via => :get, as: :borrow_history
+  match '/books/checkout-hold-list/:type' => 'books#checkout_hold_list', :via => :get, as: :checkout_hold_list
 
   # Bookmarks
   match '/bookmarks/view_bookmark' => 'bookmarks#view_bookmark', :via => :get , as: :view_bookmark

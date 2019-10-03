@@ -1,8 +1,8 @@
 require 'base64'
 
 class BooksController < ApplicationController
+  before_action :set_vars
   before_action :set_book, only: [:show, :edit, :update, :destroy]
-
 
   def search
     keyword = params[:q]
@@ -115,7 +115,7 @@ end
     end
 
   end
-
+  
   def checkout
     book_id = params[:id]
     libraries_id = current_user.libraries_id
@@ -211,16 +211,12 @@ end
   def borrow_history
     @book = Book.find(params[:book_id])
     @transaction_log = TransactionLog.where('books_id = ?', params[:book_id])
-    if !@transaction_log.blank?
-      @user = User.find(@transaction_log.users_id)
-    else
-      @user = User.new
-    end
   end
 
   def checkout_hold_list
     status = params[:status]
-    # @book_issue_transaction_list = BookIssueTransaction.where('status = ?', status).joins(:)
+    @book_issue_transaction_list = BookIssueTransaction.select('*').joins('join books on books.id = book_issue_transactions.books_id')
+    @book_issue_transaction_list
   end
 
   private
@@ -247,4 +243,14 @@ end
       end
       book_params_copy
     end
+
+    def set_vars
+      @action_log_array = [
+        '',
+        'Reached max borrowing limit',
+        'Librarian approval needed since it is special collection book',
+        'No book available for issue',
+         'Book issued']
+    end
 end
+
