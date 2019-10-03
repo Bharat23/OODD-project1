@@ -36,6 +36,8 @@ Rails.application.routes.draw do
   match '/books/bookmark/:id' => 'books#bookmark',:via => :post, as: :bookmark
   match '/books/checkout/:id' => 'books#checkout', :via => :put, as: :checkout
 
+  match '/books/borrow-history/:book_id' => 'books#borrow_history', :via => :get, as: :borrow_history
+
   # Bookmarks
   match '/bookmarks/view_bookmark' => 'bookmarks#view_bookmark', :via => :get , as: :view_bookmark
   match '/bookmarks/destroy/:book_id' => 'bookmarks#destroy' ,:via => :delete , as: :delete_bookmark
