@@ -2,28 +2,28 @@ class ApplicationController < ActionController::Base
 
     def setup_users
         user = User.new(
-            email: 'bsinha2@ncsu.edu', 
+            email: 'admin@lib.com', 
             password: '123456', 
             password_confirmation: '123456',
             role: 'admin',
-            name: 'Bharat Sinha'
+            name: 'Admin User'
           )
         user.save!
         user = User.new(
-            email: 'new@email.edu', 
+            email: 'librarian@lib.com', 
             password: '123456', 
             password_confirmation: '123456',
             role: 'librarian',
-            name: 'Ankit Manendra',
+            name: 'Librarian User',
             libraries_id: 1
           )
         user.save!
         user = User.new(
-            email: 'student@email.edu', 
+            email: 'student@lib.com', 
             password: '123456', 
             password_confirmation: '123456',
             role: 'student',
-            name: 'Ishan Awasthi',
+            name: 'Student User',
             universities_id: 1,
             educational_level: 'Masters',
             borrowing_limit: 10

@@ -15,11 +15,15 @@
       <th>Subject</th>
       <th>Summary</th>
       <th>Special collection</th>
+      <% if current_user.role == 'admin' %>
+        <th></th>
+      <% end %>
       <th></th>
       <% if current_user.role != 'student' %>
         <th></th>
         <th></th>
       <% end %>
+      <th></th>
     </tr>
   </thead>
 
@@ -36,6 +40,9 @@
         <td><%= book.subject %></td>
         <td><%= book.summary %></td>
         <td><%= book.special_collection %></td>
+        <% if current_user.role == 'admin' %>
+          <td><%= link_to 'Borrow History', borrow_history_path(book.id)%></td>
+        <% end %>
         <td><%= link_to 'Show', book%></td>
         <% if current_user.role != 'student' %>
           <td><%= link_to 'Edit', edit_book_path(book)%></td>
@@ -51,7 +58,8 @@
 <br>
 
 <% if current_user.role != 'student' %>
-  <%= link_to 'New Book', new_book_path %>
+  <%= link_to 'New Book', new_book_path %> |
 <% end %>
+<%= link_to 'Back', :back %>
 
 

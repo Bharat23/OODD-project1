@@ -40,6 +40,8 @@ Rails.application.routes.draw do
   match '/books/book_issued_list/:id' => 'books#book_issued_list', :via => :put , as: :book_issued_list
   match '/books/book_issued_list/:id' => 'books#book_issued_list', :via => :get , as: :book_issued_list_get
 
+  match '/books/borrow-history/:book_id' => 'books#borrow_history', :via => :get, as: :borrow_history
+
   # Bookmarks
   match '/bookmarks/view_bookmark' => 'bookmarks#view_bookmark', :via => :get , as: :view_bookmark
   match '/bookmarks/destroy/:book_id' => 'bookmarks#destroy' ,:via => :delete , as: :delete_bookmark

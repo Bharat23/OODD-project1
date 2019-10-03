@@ -211,6 +211,21 @@ end
     return issued_book_count < total_book_count ? true : false
   end
 
+  # /books/borrow-history/:id
+  def borrow_history
+    @book = Book.find(params[:book_id])
+    @transaction_log = TransactionLog.where('books_id = ?', params[:book_id])
+    if !@transaction_log.blank?
+      @user = User.find(@transaction_log.users_id)
+    else
+      @user = User.new
+    end
+  end
+
+  def checkout_hold_list
+    status = params[:status]
+    # @book_issue_transaction_list = BookIssueTransaction.where('status = ?', status).joins(:)
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
