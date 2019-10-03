@@ -1,0 +1,40 @@
+<h1>View Bookmark</h1>
+
+<p id="notice"><%= notice %></p>
+
+<table id="myTable">
+  <thead>
+  <tr>
+    <th>Isbn</th>
+    <th>Title</th>
+    <th>Author</th>
+    <th>Language</th>
+    <th>Date published</th>
+    <th>Edition</th>
+    <th>Front cover img</th>
+    <th>Subject</th>
+    <th>Summary</th>
+    <th>Special collection</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @book.each do |book| %>
+    <tr>
+      <td><%= book.isbn %></td>
+      <td><%= book.title %></td>
+      <td><%= book.author %></td>
+      <td><%= book.language %></td>
+      <td><%= book.date_published %></td>
+      <td><%= book.edition %></td>
+      <td><%= image_tag(book.front_cover_img, :alt => "Book Image", size: '100') %></td>
+      <td><%= book.subject %></td>
+      <td><%= book.summary %></td>
+      <td><%= book.special_collection %></td>
+      <td><%= link_to 'Return Books', book_return_path(book.id ), :method => :put %></td>
+
+
+    </tr>
+  <% end %>
+  </tbody>
+</table>
