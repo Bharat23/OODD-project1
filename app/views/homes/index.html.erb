@@ -27,7 +27,7 @@
       <%= 'Please update your profile to get unlock you actions.' %>
       <%= link_to 'Update Profile', profile_path(current_user.id) %>
     <% elsif current_user.is_approved == 2%>
-      <%= 'Your request to register has been rejected by admin !' %>
+      <%= 'Your request to register has been rejected by admin !'% >
     <% else %>
       <%= link_to 'Show Students', user_list_path('student') %>
       <br>
