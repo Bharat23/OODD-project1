@@ -127,7 +127,7 @@ end
         format.json { render json: @library.errors, status: :unprocessable_entity }
       end
     else
-      if is_special_collection?
+      if is_special_collection?(book_id)
         action_log = 2 # Librarian approval needed since it is special collection book
         respond_to do |format|
           format.html { redirect_to request.referrer , notice: 'The Book needs Librarian approval. Thank you for patience!' }
@@ -172,6 +172,24 @@ end
     @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: action_log, timestamp_of_action: DateTime.now).save
   end
 
+  def book_issued_list
+    user_id = params[:id]
+    @book_issued = BookIssueTransaction.where(users_id: user_id).pluck(:books_id)
+    @book = Book.find(@book_issued)
+  end
+
+  def book_return
+    user_id = current_user.id
+    book_id = params[:id]
+    book_count = Book.find(book_id).book_count + 1
+    @update_books_count = Book.where(id: book_id).update(book_count: book_count)
+    @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: 5, timestamp_of_action: DateTime.now).save
+    BookIssueTransaction.where(users_id: user_id, books_id: book_id).destroy_all
+    respond_to do |format|
+      format.html { redirect_to request.referrer , notice: 'Book returned !!' }
+    end
+  end
+
   def user_checked_out(book_id, libraries_id, user_id)
     return BookIssueTransaction.exists?(users_id: user_id, books_id: book_id, libraries_id: libraries_id)
   end
@@ -189,9 +207,10 @@ end
 
   def book_available_for_issue(book_id,libraries_id)
     issued_book_count = BookIssueTransaction.where('books_id =? and libraries_id =?',book_id,libraries_id).count
-    total_book_count = LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)[0]
+    total_book_count = Book.where(id: book_id).pluck(:book_count)[0]
     return issued_book_count < total_book_count ? true : false
   end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
