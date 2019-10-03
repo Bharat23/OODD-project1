@@ -1,22 +1,25 @@
 <p id="notice"><%= notice %></p>
 
-<h1>History of <%= @book.title %></h1>
+<h1>Hold Request</h1>
 <%# <%= render 'searchform', :locals => @books %>
 <table id="myTable">
   <thead>
     <tr>
-      <th>Time</th>
-      <th>Action</th>
+      <th>Book Id</th>
+      <th>Title</th>
       <th>Student Id</th>
+      <th></th>
     </tr>
   </thead>
 
   <tbody>
-    <% @transaction_log.each do |log| %>
+    <% @book_issue_transaction_list.each do |log| %>
       <tr>
-        <td><%= log.timestamp_of_action %></td>
-        <td><%= @action_log_array[log.action.to_i] %></td>
+        <td><%= log.books_id %></td>
+        <td><%= log.title %></td>
         <td><%= log.users_id %></td>
+        <td></td>
+        
       </tr>
     <% end %>
   </tbody>
