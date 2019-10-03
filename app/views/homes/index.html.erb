@@ -19,6 +19,10 @@
     <%= link_to 'Show Students', user_list_path('student') %>
     <br>
     <%= link_to 'Show All Books', books_path %>
+    <br>
+    <%= link_to 'Show Book Holds', checkout_hold_list_path('hold') %>
+    <br>
+    <%= link_to 'Show Checked out Books', checkout_hold_list_path('checked') %>
   <% end %>
   <% if current_user.role == 'librarian' %>
     <% if current_user.is_approved == 0 %>
