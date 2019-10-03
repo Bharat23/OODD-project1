@@ -127,7 +127,7 @@ end
         format.json { render json: @library.errors, status: :unprocessable_entity }
       end
     else
-      if is_special_collection?
+      if is_special_collection?(book_id)
         action_log = 2 # Librarian approval needed since it is special collection book
         respond_to do |format|
           format.html { redirect_to request.referrer , notice: 'The Book needs Librarian approval. Thank you for patience!' }
@@ -179,6 +179,7 @@ end
   def check_user_limit(user_id)
     user_id = current_user.id
     issued_book_count = BookIssueTransaction.where(:users_id => user_id).count
+    #issued_book_count = 0 if issued_book_count.nil?
     borrowing_limit = User.where('id = ?',user_id).pluck(:borrowing_limit)
     return issued_book_count == borrowing_limit[0] ? true : false
   end
@@ -188,9 +189,14 @@ end
   end
 
   def book_available_for_issue(book_id,libraries_id)
+    puts libraries_id
+    puts book_id
     issued_book_count = BookIssueTransaction.where('books_id =? and libraries_id =?',book_id,libraries_id).count
+    #issued_book_count = 0 if issued_book_count.nil?
     total_book_count = LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)[0]
-    return issued_book_count < total_book_count ? true : false
+    puts issued_book_count
+    puts total_book_count[0]
+    return issued_book_count < total_book_count[0] ? true : false
   end
 
   private
