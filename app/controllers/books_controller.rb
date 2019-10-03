@@ -122,6 +122,7 @@ end
     user_id = current_user.id
     if check_user_limit(user_id)
       action_log  = 1 # Reached max borrowing limit
+      update_status(user_id, book_id, action_log, libraries_id)
       respond_to do |format|
         format.html { redirect_to request.referrer , notice: 'Reached maximimum issue limit' }
         format.json { render json: @library.errors, status: :unprocessable_entity }
@@ -129,6 +130,7 @@ end
     else
       if is_special_collection?(book_id)
         action_log = 2 # Librarian approval needed since it is special collection book
+        update_status(user_id, book_id, action_log, libraries_id)
         respond_to do |format|
           format.html { redirect_to request.referrer , notice: 'The Book needs Librarian approval. Thank you for patience!' }
           format.json { render json: @library.errors, status: :unprocessable_entity }
@@ -136,6 +138,8 @@ end
       else
       if !book_available_for_issue(book_id, libraries_id)
         action_log= 3 # No book available for issue
+        update_status(user_id, book_id, action_log, libraries_id)
+
         respond_to do |format|
           format.html { redirect_to request.referrer , notice: 'No Book currently available' }
           format.json { render json: @library.errors, status: :unprocessable_entity }
@@ -154,12 +158,11 @@ end
               book_count = Book.find(book_id).book_count
               book_count = book_count-1
               #library_book_count = library_book_count - 1
-              @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id).save
+              @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id, status: action_log).save
               #@update_library_mapping = LibraryBookMapping.where(books_id: book_id , libraries_id: libraries_id).update( book_count: library_book_count)
               @update_books_count = Book.where(id: book_id).update(book_count: book_count)
               format.html { redirect_to books_url   , notice:'Book Checked out Successfully' }
               format.json { render :show, status: :created, location: @library }
-
           end
         end
       end
@@ -178,6 +181,12 @@ end
     user_id = current_user.id
     book_id = params[:id]
     book_count = Book.find(book_id).book_count + 1
+    libraries_id = current_user.libraries_id
+    #action_log  = 5 # Book returned
+    #update_status(user_id, book_id, action_log, libraries_id)
+    #@lib_book = LibraryBookMapping.where('books_id = ? and libraries_id = ?', book_id, current_user.libraries_id)
+    #lib_book_count =  @lib_book.book_count + 1
+    #@update_lib_book_count = LibraryBookMapping.where(books_id: book_id).update(book_count: lib_book_count)
     @update_books_count = Book.where(id: book_id).update(book_count: book_count)
     @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: 5, timestamp_of_action: DateTime.now).save
     BookIssueTransaction.where(users_id: user_id, books_id: book_id).destroy_all
@@ -202,9 +211,18 @@ end
   end
 
   def book_available_for_issue(book_id,libraries_id)
-    issued_book_count = BookIssueTransaction.where('books_id =? and libraries_id =?',book_id,libraries_id).count
+    #issued_book_count = BookIssueTransaction.where('books_id =? and libraries_id =?',book_id,libraries_id).count
     total_book_count = Book.where(id: book_id).pluck(:book_count)[0]
-    return issued_book_count < total_book_count ? true : false
+  #  return issued_book_count < total_book_count ? true : false
+    return total_book_count > 0 ? true : false
+  end
+
+  def update_status(user_id, book_id, action_log, libraries_id)
+    if BookIssueTransaction.where('users_id = ? and books_id = ?', user_id, book_id).exists?
+      BookIssueTransaction.where('books_id = ? and users_id = ?', book_id, user_id).update(status: action_log)
+    else
+      BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id, status: action_log).save
+    end
   end
 
 
