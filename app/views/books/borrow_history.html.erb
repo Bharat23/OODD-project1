@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>History of <%= @book.title %></h1>
+<%# <%= render 'searchform', :locals => @books %>
+<table id="myTable">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Action</th>
+      <th>User</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @transaction_log.each do |log| %>
+      <tr>
+        <td><%= log.timestamp_of_action %></td>
+        <td><%= log.action %></td>
+        <td><%= @user.name %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>

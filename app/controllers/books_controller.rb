@@ -148,28 +148,42 @@ end
         end
       else
           action_log = 4 # Book issued
-          book_specified_library= LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)
-          library_book_count = book_specified_library[0]
+          #book_specified_library= LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)
+          #library_book_count = book_specified_library[0]
           respond_to do |format|
-            if book_specified_library == 0
-              format.html { redirect_to request.referrer , notice: 'Book is not available in this library' }
-              format.json { render json: @library.errors, status: :unprocessable_entity }
-            else
               book_count = Book.find(book_id).book_count
               book_count = book_count-1
-              library_book_count = library_book_count - 1
+              #library_book_count = library_book_count - 1
               @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id).save
-              @update_library_mapping = LibraryBookMapping.where(books_id: book_id , libraries_id: libraries_id).update( book_count: library_book_count)
+              #@update_library_mapping = LibraryBookMapping.where(books_id: book_id , libraries_id: libraries_id).update( book_count: library_book_count)
               @update_books_count = Book.where(id: book_id).update(book_count: book_count)
               format.html { redirect_to books_url   , notice:'Book Checked out Successfully' }
               format.json { render :show, status: :created, location: @library }
-            end
+
           end
         end
       end
       end
     end
     @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: action_log, timestamp_of_action: DateTime.now).save
+  end
+
+  def book_issued_list
+    user_id = params[:id]
+    @book_issued = BookIssueTransaction.where(users_id: user_id).pluck(:books_id)
+    @book = Book.find(@book_issued)
+  end
+
+  def book_return
+    user_id = current_user.id
+    book_id = params[:id]
+    book_count = Book.find(book_id).book_count + 1
+    @update_books_count = Book.where(id: book_id).update(book_count: book_count)
+    @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: 5, timestamp_of_action: DateTime.now).save
+    BookIssueTransaction.where(users_id: user_id, books_id: book_id).destroy_all
+    respond_to do |format|
+      format.html { redirect_to request.referrer , notice: 'Book returned !!' }
+    end
   end
 
   def user_checked_out(book_id, libraries_id, user_id)
@@ -179,7 +193,6 @@ end
   def check_user_limit(user_id)
     user_id = current_user.id
     issued_book_count = BookIssueTransaction.where(:users_id => user_id).count
-    #issued_book_count = 0 if issued_book_count.nil?
     borrowing_limit = User.where('id = ?',user_id).pluck(:borrowing_limit)
     return issued_book_count == borrowing_limit[0] ? true : false
   end
@@ -189,14 +202,25 @@ end
   end
 
   def book_available_for_issue(book_id,libraries_id)
-    puts libraries_id
-    puts book_id
     issued_book_count = BookIssueTransaction.where('books_id =? and libraries_id =?',book_id,libraries_id).count
-    #issued_book_count = 0 if issued_book_count.nil?
-    total_book_count = LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)[0]
-    puts issued_book_count
-    puts total_book_count[0]
-    return issued_book_count < total_book_count[0] ? true : false
+    total_book_count = Book.where(id: book_id).pluck(:book_count)[0]
+    return issued_book_count < total_book_count ? true : false
+  end
+
+  # /books/borrow-history/:id
+  def borrow_history
+    @book = Book.find(params[:book_id])
+    @transaction_log = TransactionLog.where('books_id = ?', params[:book_id])
+    if !@transaction_log.blank?
+      @user = User.find(@transaction_log.users_id)
+    else
+      @user = User.new
+    end
+  end
+
+  def checkout_hold_list
+    status = params[:status]
+    # @book_issue_transaction_list = BookIssueTransaction.where('status = ?', status).joins(:)
   end
 
   private

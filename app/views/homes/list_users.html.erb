@@ -27,5 +27,6 @@
 </table>
 
 <% if current_user.role == 'admin' %>
-  <%= link_to 'Create New User', create_user_by_admin_path %>
+  <%= link_to 'Create New User', create_user_by_admin_path %> |
 <% end %>
+<%= link_to 'Back', :back %>

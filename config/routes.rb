@@ -33,12 +33,19 @@ Rails.application.routes.draw do
   # for creating base users
   # seed doesn't work for user tables
   match '/config/createusers/' => 'application#setup_users', :via => :get
-  match '/books/bookmark/:id' => 'books#bookmark',:via => :post, as: :bookmark
+
+  # Book return and issue
+  match '/books/book_return/:id' => 'books#book_return', :via => :put, as: :book_return
   match '/books/checkout/:id' => 'books#checkout', :via => :put, as: :checkout
+  match '/books/book_issued_list/:id' => 'books#book_issued_list', :via => :put , as: :book_issued_list
+  match '/books/book_issued_list/:id' => 'books#book_issued_list', :via => :get , as: :book_issued_list_get
+
+  match '/books/borrow-history/:book_id' => 'books#borrow_history', :via => :get, as: :borrow_history
 
   # Bookmarks
   match '/bookmarks/view_bookmark' => 'bookmarks#view_bookmark', :via => :get , as: :view_bookmark
   match '/bookmarks/destroy/:book_id' => 'bookmarks#destroy' ,:via => :delete , as: :delete_bookmark
+  match '/books/bookmark/:id' => 'books#bookmark',:via => :post, as: :bookmark
   root to: "homes#index"
   # end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

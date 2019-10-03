@@ -1,6 +1,6 @@
 <h1>View Bookmark</h1>
 
-<p id="notice">
+<p id="notice"><%= notice %></p>
 
 <table id="myTable">
   <thead>
@@ -15,13 +15,9 @@
     <th>Subject</th>
     <th>Summary</th>
     <th>Special collection</th>
-    <% if current_user.role == 'student' %>
-      <th></th>
-      <th></th>
-    <% end %>
+    <th></th>
   </tr>
   </thead>
-
   <tbody>
   <% @book.each do |book| %>
     <tr>
@@ -35,14 +31,10 @@
       <td><%= book.subject %></td>
       <td><%= book.summary %></td>
       <td><%= book.special_collection %></td>
-      <% if current_user.role == 'student' %>
-        <td><%= link_to 'Show', book%></td>
-        <td><%= link_to 'Remove Bookmark', delete_bookmark_path(:book_id => book.id), :method => :delete %></td>
-      <% end %>
+      <td><%= link_to 'Return Books', book_return_path(book.id ), :method => :put %></td>
+
+
     </tr>
   <% end %>
   </tbody>
 </table>
-
-<%= link_to 'Back', :back %>
-
