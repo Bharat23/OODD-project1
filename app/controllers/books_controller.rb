@@ -254,7 +254,7 @@ end
       if img
         book_params_copy['front_cover_img'] = 'data:' + book_params['front_cover_img'].content_type + ';base64,' + Base64.encode64(img.open.read);
       else
-        book_params_copy['front_cover_img'] = @book.front_cover_img
+        book_params_copy['front_cover_img'] = ''
       end
       if current_user.role == 'librarian'
         book_params_copy['libraries_id'] = current_user.libraries_id
