@@ -1,6 +1,9 @@
 require 'base64'
 
 class BooksController < ApplicationController
+  before_action only: [:new, :create, :edit, :update] do 
+    allowed_users(['admin', 'librarian'])
+  end
   before_action :set_vars
   before_action :set_book, only: [:show, :edit, :update, :destroy]
 

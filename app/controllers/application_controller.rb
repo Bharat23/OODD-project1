@@ -79,4 +79,16 @@ class ApplicationController < ActionController::Base
             redirect_to '/'
         end
     end
+
+    def allowed_users(user_type_list=[])
+        if user_signed_in?
+            if user_type_list.include? current_user.role
+                return true
+            else
+                redirect_to '/'
+            end
+        else
+            redirect_to '/'
+        end
+    end
 end
