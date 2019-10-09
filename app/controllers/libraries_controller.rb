@@ -1,5 +1,6 @@
 class LibrariesController < ApplicationController
   # before_action :is_admin!
+  before_action :is_admin!, only: [:index, :new]
   before_action :set_library, only: [:show, :edit, :update, :destroy]
   before_action :is_librarian!, only: [:add_book_library, :add_update_book_library]
 
@@ -12,6 +13,15 @@ class LibrariesController < ApplicationController
   # GET /libraries/1
   # GET /libraries/1.json
   def show
+    if current_user == 'student'
+      redirect_to '/'
+    elsif current_user.role == 'librarian'
+      puts current_user.libraries_id
+      puts params[:id]
+      if current_user.libraries_id.to_s != params[:id].to_s
+        redirect_to '/'
+      end
+    end
   end
 
   # GET /libraries/new
@@ -21,6 +31,15 @@ class LibrariesController < ApplicationController
 
   # GET /libraries/1/edit
   def edit
+    if current_user == 'student'
+      redirect_to '/'
+    elsif current_user.role == 'librarian'
+      puts current_user.libraries_id
+      puts params[:id]
+      if current_user.libraries_id.to_s != params[:id].to_s
+        redirect_to '/'
+      end
+    end
   end
 
   # POST /libraries

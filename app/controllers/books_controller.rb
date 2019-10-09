@@ -48,6 +48,11 @@ end
   # GET /books/1
   # GET /books/1.json
   def show
+    if current_user.role == 'librarian'
+      if @book.libraries_id && @book.libraries_id != current_user.libraries_id
+        redirect_to '/'
+      end
+    end
   end
 
   # GET /books/new
@@ -57,6 +62,11 @@ end
 
   # GET /books/1/edit
   def edit
+    if current_user.role == 'librarian'
+      if @book.libraries_id != current_user.libraries_id
+        redirect_to '/'
+      end
+    end
   end
 
   # POST /books

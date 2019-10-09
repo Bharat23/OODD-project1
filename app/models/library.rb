@@ -3,5 +3,4 @@ class Library < ApplicationRecord
     validates :location, presence: true
     validates :fine_per_day, presence: true, numericality: true
     validates :borrow_duration, presence: true, numericality: true
-    belongs_to :university
 end
