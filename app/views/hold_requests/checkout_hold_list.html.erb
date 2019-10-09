@@ -1,0 +1,35 @@
+<h1>Hold Request</h1>
+<table id="myTable" align="center">
+  <thead  align="center">
+  <tr>
+    <th>Book ID</th>
+    <th>Book Name</th>
+    <% if @user_id == 'admin' %>
+    <th>Student Id</th>
+    <th> Student Name</th>
+    <% end %>
+  </tr>
+  </thead>
+  <tbody  align="center">
+
+  <% @list_of_holds.each do |log| %>
+    <tr>
+      <td><%= log.books_id %></td>
+      <% @book = Book.find(log.books_id) %>
+      <% bookname = @book.title %>
+      <td><%= bookname  %></td>
+      <% if @user_id == 'admin' %>
+          <td><%= log.users_id %></td>
+        <% @user = User.find(log.users_id)%>
+        <% username = @user.name %>
+          <td><%= username %></td>
+      <% else %>
+        <% user_id = log.users_id %>
+        <% book_id = log.books_id %>
+        <td><%= link_to 'Delete hold request', delete_hold_request_path(user_id, book_id) %></td>
+      <% end %>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<br>
