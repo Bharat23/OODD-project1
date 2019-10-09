@@ -559,7 +559,9 @@ Book.create([
         HTq2z44rKyuSBYOQPrWEnnk5yN6ysrlx2WdQOleL2z61lZSpVnI7eFdW/gFZ
         WU0rl//Z",
         subject: "Fiction",
-        summary: "this is a test summary"
+        summary: "this is a test summary",
+        libraries_id: "1",
+        book_count: "10"
     }
 ]);
 
@@ -580,12 +582,14 @@ Library.create([
         name: 'Hunt',
         location: 'Centennial',
         borrow_duration: 5,
-        fine_per_day: 5
+        fine_per_day: 5,
+        universities_id: 1
     },
     {
         name: 'D.H Hill',
         location: 'Hillsborough Street',
         borrow_duration: 10,
-        fine_per_day: 3
+        fine_per_day: 3,
+        universities_id: 1
     }
 ]);

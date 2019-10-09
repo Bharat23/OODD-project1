@@ -1,6 +1,7 @@
-<h1>View Bookmark</h1>
+<h1>View Issued Books</h1>
 
 <p id="notice"><%= notice %></p>
+<h3><%= "Total Fine amount is #{@total_fine}"  %> </h3>
 
 <table id="myTable">
   <thead>
@@ -32,8 +33,6 @@
       <td><%= book.summary %></td>
       <td><%= book.special_collection %></td>
       <td><%= link_to 'Return Books', book_return_path(book.id ), :method => :put %></td>
-
-
     </tr>
   <% end %>
   </tbody>
