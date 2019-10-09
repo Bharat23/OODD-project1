@@ -1,0 +1,33 @@
+<h1>Hold Requests</h1>
+
+<p id="notice"><%= notice %></p>
+
+<table id="myTable">
+  <thead>
+  <tr>
+    <th>Student ID</th>
+    <th>Name</th>
+    <th>Book ID</th>
+    <th>Name of Book</th>
+
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @pending_approval.each do |book_issue| %>
+    <% @stud = User.find(book_issue.users_id) %>
+    <% @book = Book.find(book_issue.books_id) %>
+    <tr>
+      <td><%= book_issue.users_id %></td>
+      <td><%= @stud.name %></td>
+      <td><%= book_issue.books_id %></td>
+      <td><%= @book.title %></td>
+      <td><%= link_to 'Approve', approve_reject_request_path(book_issue.id, 1) %></td>
+      <td><%= link_to 'Reject', approve_reject_request_path(book_issue.id, 2)%></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Back', :back %>

@@ -131,6 +131,7 @@ end
       if is_special_collection?(book_id)
         action_log = 2 # Librarian approval needed since it is special collection book
         update_status(user_id, book_id, action_log, libraries_id)
+       # notify_librarian(user_id, book_id, libraries_id)
         respond_to do |format|
           format.html { redirect_to request.referrer , notice: 'The Book needs Librarian approval. Thank you for patience!' }
           format.json { render json: @library.errors, status: :unprocessable_entity }
@@ -226,6 +227,10 @@ end
     return total_book_count > 0 ? true : false
   end
 
+  def checkout_hold_list
+    #@list_of_holds = BookIssueTransaction.where('status = ?', 2)
+  end
+
   def update_status(user_id, book_id, action_log, libraries_id)
     if BookIssueTransaction.where('users_id = ? and books_id = ?', user_id, book_id).exists?
       BookIssueTransaction.where('books_id = ? and users_id = ?', book_id, user_id).update(status: action_log)
@@ -238,12 +243,6 @@ end
   def borrow_history
     @book = Book.find(params[:book_id])
     @transaction_log = TransactionLog.where('books_id = ?', params[:book_id])
-  end
-
-  def checkout_hold_list
-    status = params[:status]
-    @book_issue_transaction_list = BookIssueTransaction.select('*').joins('join books on books.id = book_issue_transactions.books_id')
-    @book_issue_transaction_list
   end
 
   private

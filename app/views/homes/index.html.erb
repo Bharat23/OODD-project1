@@ -20,16 +20,18 @@
     <br>
     <%= link_to 'Show All Books', books_path %>
     <br>
-    <%= link_to 'Show Book Holds', checkout_hold_list_path('hold') %>
+    <%= link_to 'Show Book Holds', checkout_hold_list_path('admin') %>
     <br>
-    <%= link_to 'Show Checked out Books', checkout_hold_list_path('checked') %>
+    <%#= link_to 'Show Checked out Books', checkout_hold_list_path('checked') %>
   <% end %>
   <% if current_user.role == 'librarian' %>
     <% if current_user.is_approved == 0 %>
-      <%= 'Your account is not approved yet. You will be notified as soon as you get approved.' %>
+      <%= 'Your account is not approved by admin yet. You will be notified as soon as you get approved.' %>
     <% elsif current_user.is_approved == 1 && !current_user.libraries_id %>
       <%= 'Please update your profile to get unlock you actions.' %>
       <%= link_to 'Update Profile', profile_path(current_user.id) %>
+    <% elsif current_user.is_approved == 2%>
+      <%= 'Your request to register has been rejected by admin !'%>
     <% else %>
       <%= link_to 'Show Students', user_list_path('student') %>
       <br>
@@ -38,19 +40,15 @@
       <%= link_to 'Show Library Books', books_path + '?listtype=my' %>
       <br>
       <%= link_to 'View My Library', library_path(current_user.libraries_id) %>
+      <br>
+      <%= link_to 'Show Hold Requests', hold_request_path(current_user.libraries_id) %>
     <% end %>
   <% end %>
   <% if current_user.role == 'student' %>
-    <% if current_user.universities_id != nil%>
-      <%= link_to 'Show Available Books', books_path + '?listtype=available' %> <br>
-      <%= link_to 'View Bookmarks', view_bookmark_path, :method => :get %><br>
-      <%= link_to 'List Issued Books', book_issued_list_path(:id => current_user.id), :method => :put %>
-
-    <% else %>
-      <br>
-      <%= 'Please update your profile to get unlock you actions.' %> <br><br>
-    <br>
-    <% end %>
+    <%= link_to 'Show Available Books', books_path + '?listtype=available' %> <br>
+    <%= link_to 'View Bookmarks', view_bookmark_path, :method => :get %><br>
+    <%= link_to 'List Issued Books', book_issued_list_path(:id => current_user.id), :method => :put %><br>
+    <%= link_to 'My Hold Requests', checkout_hold_list_path(current_user.id) %><br>
   <% end %>
 </div>
 

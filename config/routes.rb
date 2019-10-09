@@ -8,7 +8,6 @@ Rails.application.routes.draw do
   }
   resources :libraries
   resources :universities
-
   resources :homes
 
   match '/userlist/:type' => 'homes#list_users', :via => :get, as: :user_list
@@ -41,13 +40,23 @@ Rails.application.routes.draw do
   match '/books/book_issued_list/:id' => 'books#book_issued_list', :via => :get , as: :book_issued_list_get
 
   match '/books/borrow-history/:book_id' => 'books#borrow_history', :via => :get, as: :borrow_history
-  match '/books/checkout-hold-list/:type' => 'books#checkout_hold_list', :via => :get, as: :checkout_hold_list
+
 
   # Bookmarks
   match '/bookmarks/view_bookmark' => 'bookmarks#view_bookmark', :via => :get , as: :view_bookmark
   match '/bookmarks/destroy/:book_id' => 'bookmarks#destroy' ,:via => :delete , as: :delete_bookmark
   match '/books/bookmark/:id' => 'books#bookmark',:via => :post, as: :bookmark
   root to: "homes#index"
+
+  # approve_holds
+  match '/approve_holds/showholdrequests/:libraries_id' => 'approve_holds#show_hold_requests', :via => :get, as: :hold_request
+  match '/approve_holds/approve_reject_request/:record_id/:approval_type' => 'approve_holds#approve_reject_request', :via => :get, as: :approve_reject_request
+
+  #holds
+  match '/hold_requests/:user_id' => 'hold_requests#checkout_hold_list', :via => :get, as: :checkout_hold_list
+  match '/hold_requests/delete_hold_request/:stud_id/:b_id' => 'hold_requests#delete_hold_request', :via => :get, as: :delete_hold_request
   # end
+  #
+
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
