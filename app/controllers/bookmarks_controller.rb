@@ -10,7 +10,6 @@ class BookmarksController < ApplicationController
 
   def destroy
     book_id = params[:book_id]
-    puts "++++++++++++++++++++++ #{book_id} ++++++++++++++++++++++++++"
     Bookmark.where(books_id: book_id).destroy_all
     respond_to do |format|
       format.html { redirect_to request.referrer , notice: 'Bookmark deleted :(' }
