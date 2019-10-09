@@ -6,10 +6,38 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+University.create([
+    {
+        name: 'North Carolina State University',
+    },
+    {
+        name: 'University of North Carolina',
+    },
+    {
+        name: 'Duke',
+    }
+]);
+
+Library.create([
+    {
+        name: 'Hunt',
+        location: 'Centennial',
+        borrow_duration: 5,
+        fine_per_day: 5,
+        universities_id: 1
+    },
+    {
+        name: 'D.H Hill',
+        location: 'Hillsborough Street',
+        borrow_duration: 10,
+        fine_per_day: 3,
+        universities_id: 1
+    }
+]);
 
 Book.create([
     {
-        isbn: '0-7475-3269-9',
+        isbn: '0-7475-3269-0',
         title: "Harry Potter and the sorcer's stone",
         author: "J.K Rowling",
         language: "English",
@@ -560,36 +588,7 @@ Book.create([
         WU0rl//Z",
         subject: "Fiction",
         summary: "this is a test summary",
-        libraries_id: "1",
-        book_count: "10"
-    }
-]);
-
-University.create([
-    {
-        name: 'North Carolina State University',
-    },
-    {
-        name: 'University of North Carolina',
-    },
-    {
-        name: 'Duke',
-    }
-]);
-
-Library.create([
-    {
-        name: 'Hunt',
-        location: 'Centennial',
-        borrow_duration: 5,
-        fine_per_day: 5,
-        universities_id: 1
-    },
-    {
-        name: 'D.H Hill',
-        location: 'Hillsborough Street',
-        borrow_duration: 10,
-        fine_per_day: 3,
-        universities_id: 1
+        libraries_id: 1,
+        book_count: 10
     }
 ]);

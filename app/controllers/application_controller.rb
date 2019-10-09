@@ -91,4 +91,27 @@ class ApplicationController < ActionController::Base
             redirect_to '/'
         end
     end
+
+    def only_for_me(id, allow_for_admin = true, allow_for_lib = false)
+        puts 'hehehehehehehehe'
+        puts id
+        puts current_user.id
+        if user_signed_in?
+            if current_user.role == 'admin' && allow_for_admin == true
+                puts '-----------'
+                return true
+            elsif current_user.role == 'librarian' && allow_for_lib == true
+                return true
+            elsif current_user.id.to_s == id.to_s
+                puts '=========='
+                return true
+            else
+                puts '?????????????'
+                redirect_to '/'
+            end
+        else
+            puts '***********'
+            redirect_to '/'
+        end
+    end
 end
