@@ -2,10 +2,13 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
       sessions: 'users/sessions',
       registrations: 'users/registrations',
-      passwords: 'users/passwords'
+      passwords: 'users/passwords',
+      omniauth_callbacks: 'users/omniauth_callbacks',
+      omniauth_authorize: 'users/omniauth_callbacks',
   }, path_names: {
       sign_in: 'login', sign_out: 'logout', password: 'secret', confirmation: 'verification', registration: 'register'
   }
+
   resources :libraries
   resources :universities
   resources :homes
@@ -57,6 +60,9 @@ Rails.application.routes.draw do
   match '/hold_requests/delete_hold_request/:stud_id/:b_id' => 'hold_requests#delete_hold_request', :via => :get, as: :delete_hold_request
   # end
   #
+
+  # google oauth
+  # match '/users/auth/google/callback' => 'users/omniauth_call', 
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

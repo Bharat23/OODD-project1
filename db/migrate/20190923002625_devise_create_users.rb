@@ -21,6 +21,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
       t.string "educational_level"
       t.integer "borrowing_limit", default: 0
       t.integer "is_approved", default: 0
+      t.string "provider"
+      t.string "uid"
 
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false
