@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_26_024842) do
+ActiveRecord::Schema.define(version: 2019_10_10_023040) do
 
   create_table "book_issue_transactions", force: :cascade do |t|
     t.integer "users_id"
@@ -102,6 +102,14 @@ ActiveRecord::Schema.define(version: 2019_09_26_024842) do
     t.index ["universities_id"], name: "index_users_on_universities_id"
   end
 
+  create_table "waitlists", force: :cascade do |t|
+    t.integer "books_id"
+    t.integer "users_id"
+    t.datetime "created_at"
+    t.index ["books_id"], name: "index_waitlists_on_books_id"
+    t.index ["users_id"], name: "index_waitlists_on_users_id"
+  end
+
   add_foreign_key "book_issue_transactions", "books", column: "books_id"
   add_foreign_key "book_issue_transactions", "libraries", column: "libraries_id"
   add_foreign_key "book_issue_transactions", "users", column: "users_id"
@@ -115,4 +123,6 @@ ActiveRecord::Schema.define(version: 2019_09_26_024842) do
   add_foreign_key "transaction_logs", "users", column: "users_id"
   add_foreign_key "users", "libraries", column: "libraries_id"
   add_foreign_key "users", "universities", column: "universities_id"
+  add_foreign_key "waitlists", "books", column: "books_id"
+  add_foreign_key "waitlists", "users", column: "users_id"
 end
