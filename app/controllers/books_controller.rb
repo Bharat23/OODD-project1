@@ -158,8 +158,15 @@ end
           respond_to do |format|
               book_count = Book.find(book_id).book_count
               book_count = book_count-1
+              due_date = Date.today + (Library.find(libraries_id).borrow_duration)
+              last_updated = DateTime.now
+              reason = "Normal Book Issue"
+              fine_amount = Library.find(libraries_id).fine_per_day * (Date.today - due_date)
+              if fine_amount < 0
+                fine_amount = 0
+              end
               #library_book_count = library_book_count - 1
-              @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id, status: action_log).save
+              @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id, status: action_log, due_date: due_date, last_updated: last_updated, reason: reason, fine_amount: fine_amount).save
               #@update_library_mapping = LibraryBookMapping.where(books_id: book_id , libraries_id: libraries_id).update( book_count: library_book_count)
               @update_books_count = Book.where(id: book_id).update(book_count: book_count)
               format.html { redirect_to books_url   , notice:'Book Checked out Successfully' }
@@ -176,6 +183,8 @@ end
     user_id = params[:id]
     @book_issued = BookIssueTransaction.where(users_id: user_id).pluck(:books_id)
     @book = Book.find(@book_issued)
+    fine_amount = BookIssueTransaction.where(users_id: user_id).pluck(:fine_amount)
+    @total_fine = fine_amount.inject(0, :+)
   end
 
   def book_return
