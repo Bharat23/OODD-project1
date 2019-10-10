@@ -266,9 +266,9 @@ end
   def checked_out_books
     @user_id = params[:user_id]
     if @user_id == 'admin'
-      @record = BookIssueTransaction.where('status = ?', 4)
+      @record = BookIssueTransaction.where('status = ?', '4')
     else
-      @record = BookIssueTransaction.where('status = ? and libraries_id = ?', 4, @user_id)
+      @record = BookIssueTransaction.where('status = ? and libraries_id = ?', '4', @user_id)
     end
   end
 
