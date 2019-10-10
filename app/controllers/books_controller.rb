@@ -1,4 +1,4 @@
-require 'base64'
+ require 'base64'
 
 class BooksController < ApplicationController
   before_action :set_vars
@@ -118,46 +118,49 @@ end
   
   def checkout
     book_id = params[:id]
-    libraries_id = current_user.libraries_id
+    libraries_id = Book.find(book_id).libraries_id
     user_id = current_user.id
-    if check_user_limit(user_id)
-      action_log  = 1 # Reached max borrowing limit
-      update_status(user_id, book_id, action_log, libraries_id)
+    if user_checked_out(book_id, libraries_id, user_id)
       respond_to do |format|
-        format.html { redirect_to request.referrer , notice: 'Reached maximimum issue limit' }
+        format.html { redirect_to request.referrer , notice: 'Already Issued ' }
+        format.json { render json: @library.errors, status: :unprocessable_entity }
+      end
+    else
+    if check_user_limit(user_id)
+      @action_log  = 1 # Reached max borrowing limit
+      update_status(user_id, book_id, @action_log, libraries_id)
+      respond_to do |format|
+        format.html { redirect_to request.referrer , notice: 'Reached maximum issue limit' }
         format.json { render json: @library.errors, status: :unprocessable_entity }
       end
     else
       if is_special_collection?(book_id)
-        action_log = 2 # Librarian approval needed since it is special collection book
-        update_status(user_id, book_id, action_log, libraries_id)
+        @action_log = 2 # Librarian approval needed since it is special collection book
+        update_status(user_id, book_id, @action_log, libraries_id)
        # notify_librarian(user_id, book_id, libraries_id)
+       #
         respond_to do |format|
           format.html { redirect_to request.referrer , notice: 'The Book needs Librarian approval. Thank you for patience!' }
           format.json { render json: @library.errors, status: :unprocessable_entity }
         end
       else
-      if !book_available_for_issue(book_id, libraries_id)
-        action_log= 3 # No book available for issue
-        update_status(user_id, book_id, action_log, libraries_id)
+        if !book_available_for_issue(book_id, libraries_id)
+          @action_log= 3 # No book available for issue
+          #update_status(user_id, book_id, @action_log, libraries_id)
+          waitlist(book_id)
+          respond_to do |format|
+            format.html { redirect_to request.referrer , notice: 'All the books have been issued and you are on the waitlist' }
+            format.json { render json: @library.errors, status: :unprocessable_entity }
+          end
+        else
 
-        respond_to do |format|
-          format.html { redirect_to request.referrer , notice: 'No Book currently available' }
-          format.json { render json: @library.errors, status: :unprocessable_entity }
-        end
-      else
-      if user_checked_out(book_id, libraries_id, user_id)
-        respond_to do |format|
-          format.html { redirect_to request.referrer , notice: 'Already Issued ' }
-          format.json { render json: @library.errors, status: :unprocessable_entity }
-        end
-      else
-          action_log = 4 # Book issued
+          @action_log = 4 # Book issued
           #book_specified_library= LibraryBookMapping.where('libraries_id = ? AND books_id =? ', libraries_id, book_id).pluck(:book_count)
           #library_book_count = book_specified_library[0]
           respond_to do |format|
               book_count = Book.find(book_id).book_count
               book_count = book_count-1
+              libraries_id = Book.find(book_id).libraries_id
               due_date = Date.today + (Library.find(libraries_id).borrow_duration)
               last_updated = DateTime.now
               reason = "Normal Book Issue"
@@ -165,9 +168,8 @@ end
               if fine_amount < 0
                 fine_amount = 0
               end
-              #library_book_count = library_book_count - 1
-              @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id, status: action_log, due_date: due_date, last_updated: last_updated, reason: reason, fine_amount: fine_amount).save
-              #@update_library_mapping = LibraryBookMapping.where(books_id: book_id , libraries_id: libraries_id).update( book_count: library_book_count)
+              action_log = @action_log
+              @checkout_book = BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id, status: @action_log, due_date: due_date, last_updated: last_updated, reason: reason, fine_amount: fine_amount).save
               @update_books_count = Book.where(id: book_id).update(book_count: book_count)
               format.html { redirect_to books_url   , notice:'Book Checked out Successfully' }
               format.json { render :show, status: :created, location: @library }
@@ -176,7 +178,7 @@ end
       end
       end
     end
-    @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: action_log, timestamp_of_action: DateTime.now).save
+    @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: @action_log, timestamp_of_action: DateTime.now).save
   end
 
   def book_issued_list
@@ -184,25 +186,45 @@ end
     @book_issued = BookIssueTransaction.where(users_id: user_id).pluck(:books_id)
     @book = Book.find(@book_issued)
     fine_amount = BookIssueTransaction.where(users_id: user_id).pluck(:fine_amount)
-    @total_fine = fine_amount.inject(0, :+)
+    @total_fine = fine_amount.sum
   end
+
 
   def book_return
     user_id = current_user.id
     book_id = params[:id]
     book_count = Book.find(book_id).book_count + 1
-    libraries_id = current_user.libraries_id
-    #action_log  = 5 # Book returned
-    #update_status(user_id, book_id, action_log, libraries_id)
-    #@lib_book = LibraryBookMapping.where('books_id = ? and libraries_id = ?', book_id, current_user.libraries_id)
-    #lib_book_count =  @lib_book.book_count + 1
-    #@update_lib_book_count = LibraryBookMapping.where(books_id: book_id).update(book_count: lib_book_count)
+    libraries_id = Book.find(book_id).libraries_id
+    @action_log  = 5 # Book returned
+    update_status(user_id, book_id, @action_log, libraries_id)
     @update_books_count = Book.where(id: book_id).update(book_count: book_count)
-    @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: 5, timestamp_of_action: DateTime.now).save
+    @insert_log = TransactionLog.new(books_id: book_id, users_id: current_user.id, action: @action_log, timestamp_of_action: DateTime.now).save
     BookIssueTransaction.where(users_id: user_id, books_id: book_id).destroy_all
+    # Get user from waitlist table (1st row if exists)
+    user_waitlisted = Waitlist.where("books_id =?",book_id)
+
+    if user_waitlisted.exists?
+      waitlist_id = user_waitlisted.pluck(:users_id)[0]
+      first_user_in_waitlist = user_waitlisted.first
+    # delete the record from waitlist
+      first_user_in_waitlist.destroy
+    # issue the book to user id from waitlist
+      book_count = book_count - 1
+      due_date = Date.today + (Library.find(libraries_id).borrow_duration)
+      last_updated = DateTime.now
+      reason = "Normal Book Issue"
+      fine_amount = Library.find(libraries_id).fine_per_day * (Date.today - due_date)
+      if fine_amount < 0
+        fine_amount = 0
+      end
+      action_log = 4
+      @checkout_book = BookIssueTransaction.new(users_id: waitlist_id, books_id: book_id, libraries_id: libraries_id, status: action_log, due_date: due_date, last_updated: last_updated, reason: reason, fine_amount: fine_amount).save
+      @update_books_count = Book.where(id: book_id).update(book_count: book_count)
+    end
     respond_to do |format|
       format.html { redirect_to request.referrer , notice: 'Book returned !!' }
     end
+
   end
 
   def user_checked_out(book_id, libraries_id, user_id)
@@ -232,13 +254,33 @@ end
   end
 
   def update_status(user_id, book_id, action_log, libraries_id)
+
+
+    libraries_id = Book.find(book_id).libraries_id
+    due_date = Date.today + (Library.find(libraries_id).borrow_duration)
+    last_updated = DateTime.now
+    reason = "Normal Book Issue"
+    fine_amount = Library.find(libraries_id).fine_per_day * (Date.today - due_date)
+    if fine_amount < 0
+      fine_amount = 0
+    end
     if BookIssueTransaction.where('users_id = ? and books_id = ?', user_id, book_id).exists?
-      BookIssueTransaction.where('books_id = ? and users_id = ?', book_id, user_id).update(status: action_log)
+      BookIssueTransaction.where('books_id = ? and users_id = ?', book_id, user_id).update(status: @action_log)
     else
-      BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id, status: action_log).save
+      BookIssueTransaction.new(users_id: current_user.id, books_id: book_id, libraries_id: libraries_id, status: @action_log, due_date: due_date, last_updated: last_updated, reason: reason, fine_amount: fine_amount).save
     end
   end
 
+  def waitlist(book)
+    user_id = current_user.id
+    libraries_id = Book.find(book).libraries_id
+    action_log = 2 #Book Waitlisted
+    @book_count = Book.find(book).book_count
+    if @book_count == 0
+      Waitlist.new(books_id: book, users_id: user_id ,created_at: DateTime.now).save
+      TransactionLog.new(books_id: book, users_id: current_user.id, action: @action_log, timestamp_of_action: DateTime.now).save
+    end
+  end
   # /books/borrow-history/:id
   def borrow_history
     @book = Book.find(params[:book_id])
@@ -276,7 +318,10 @@ end
         'Reached max borrowing limit',
         'Librarian approval needed since it is special collection book',
         'No book available for issue',
-         'Book issued']
+         'Book issued',
+      'Book returned',
+      'Book Waitlisted',
+      ]
     end
 end
 

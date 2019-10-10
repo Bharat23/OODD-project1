@@ -45,10 +45,15 @@
     <% end %>
   <% end %>
   <% if current_user.role == 'student' %>
-    <%= link_to 'Show Available Books', books_path + '?listtype=available' %> <br>
-    <%= link_to 'View Bookmarks', view_bookmark_path, :method => :get %><br>
-    <%= link_to 'List Issued Books', book_issued_list_path(:id => current_user.id), :method => :put %><br>
-    <%= link_to 'My Hold Requests', checkout_hold_list_path(current_user.id) %><br>
+    <% if current_user.universities_id != nil%>
+      <%= link_to 'Show Available Books', books_path + '?listtype=available' %> <br>
+      <%= link_to 'View Bookmarks', view_bookmark_path, :method => :get %><br>
+      <%= link_to 'List Issued Books', book_issued_list_path(:id => current_user.id), :method => :put %><br>
+      <%= link_to 'My Hold Requests', checkout_hold_list_path(current_user.id) %><br>
+      <%else %>
+      <%= 'Please update your profile to get unlock you actions.' %> <br><br>
+      <br>
+      <%end %>
   <% end %>
 </div>
 

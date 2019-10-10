@@ -3,7 +3,7 @@ class HoldRequestsController < ApplicationController
   def checkout_hold_list
     @user_id = params[:user_id]
     if @user_id == 'admin'
-      @list_of_holds = BookIssueTransaction.where('status = ?', 2)
+      @list_of_holds = BookIssueTransaction.where('status = ?', 2 )
     else
       @list_of_holds = BookIssueTransaction.where('status = ? and users_id = ?', 2, @user_id)
     end

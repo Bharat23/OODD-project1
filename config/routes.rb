@@ -41,6 +41,8 @@ Rails.application.routes.draw do
 
   match '/books/borrow-history/:book_id' => 'books#borrow_history', :via => :get, as: :borrow_history
 
+  # Waitlist
+  match '/books/waitlist/:id' => 'books#waitlist', :via =>:get, as: :waitlist
 
   # Bookmarks
   match '/bookmarks/view_bookmark' => 'bookmarks#view_bookmark', :via => :get , as: :view_bookmark
