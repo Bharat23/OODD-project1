@@ -236,6 +236,17 @@ end
     @transaction_log = TransactionLog.where('books_id = ?', params[:book_id])
   end
 
+
+  #show checked out books list ---to admin and librarian
+  def checked_out_books
+    @user_id = params[:user_id]
+    if @user_id == 'admin'
+      @record = BookIssueTransaction.where('status = ?', 4)
+    else
+      @record = BookIssueTransaction.where('status = ? and libraries_id = ?', 4, @user_id)
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_book

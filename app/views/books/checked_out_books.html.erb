@@ -1,0 +1,36 @@
+<h1>List of checked out books</h1>
+
+<p id="notice"><%= notice %></p>
+
+<table id="myTable">
+  <thead align = "center">
+  <tr>
+    <th>Student ID</th>
+    <th>Name</th>
+    <th>Book ID</th>
+    <th>Name of Book</th>
+    <% if @user_id == 'admin' %>
+    <th> Library ID</th>
+    <% end %>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody align = "center">
+  <% @record.each do |record| %>
+    <% @stud = User.find(record.users_id) %>
+    <% @book = Book.find(record.books_id) %>
+    <tr>
+      <td><%= record.users_id %></td>
+      <td><%= @stud.name %></td>
+      <td><%= record.books_id %></td>
+      <td><%= @book.title %></td>
+      <% if @user_id == 'admin' %>
+        <td> <%= record.libraries_id %> </td>
+      <% end %>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Back', :back %>
