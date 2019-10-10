@@ -32,5 +32,7 @@
 
 <br>
 
-<%= link_to 'New Library', new_library_path %> |
+<% if current_user.role == 'admin' %>
+  <%= link_to 'New Library', new_library_path %> |
+<% end %>
 <%= link_to 'Back', :back %>

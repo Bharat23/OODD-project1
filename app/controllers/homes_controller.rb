@@ -1,5 +1,9 @@
 class HomesController < ApplicationController
   before_action :authenticated_user!
+  before_action :is_admin!, only: [:new_user_by_admin]
+  before_action only: [:edit, :show] do 
+    only_for_me(params[:id], allow_for_admin=true)
+  end
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /homes
@@ -19,8 +23,8 @@ class HomesController < ApplicationController
     end
   end
 
-  # GET /homes/1
-  # GET /homes/1.json
+  # GET /profile/1
+  # GET /profile/1.json
   def show
   end
 

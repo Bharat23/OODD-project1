@@ -9,7 +9,7 @@
   </tr>
   </thead>
   <tbody>
-  <% @list_of_holds = BookIssueTransaction.where('status = ?', 2) %>
+  <% @list_of_holds = BookIssueTransaction.where('status = ?', '2') %>
   <% @list_of_holds.each do |log| %>
     <tr>
       <td><%= log.books_id %></td>

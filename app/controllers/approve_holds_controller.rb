@@ -1,13 +1,13 @@
 class ApproveHoldsController < ApplicationController
   def show_hold_requests
     lib_id = params[:libraries_id]
-    @pending_approval = BookIssueTransaction.where("status = ? and libraries_id = ?", 2, lib_id)
+    @pending_approval = BookIssueTransaction.where("status = ? and libraries_id = ?", '2', lib_id)
   end
 
   def approve_reject_request
     record_id = params[:record_id].to_i
     type = params[:approval_type].to_i
-    puts "+++++++++++++++++++++++++++++++++++"
+    #puts "+++++++++++++++++++++++++++++++++++"
     @request = BookIssueTransaction.find(record_id)
     @libraries_id = @request.libraries_id
     if type == 1

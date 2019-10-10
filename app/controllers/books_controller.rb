@@ -1,6 +1,12 @@
  require 'base64'
 
+# use this code to send the mailer
+# BookIssueMailer.book_issued_email(<student_id>, <book_id>).deliver_now
+
 class BooksController < ApplicationController
+  before_action only: [:new, :create, :edit, :update] do 
+    allowed_users(['admin', 'librarian'])
+  end
   before_action :set_vars
   before_action :set_book, only: [:show, :edit, :update, :destroy]
 
@@ -45,6 +51,11 @@ end
   # GET /books/1
   # GET /books/1.json
   def show
+    if current_user.role == 'librarian'
+      if @book.libraries_id && @book.libraries_id != current_user.libraries_id
+        redirect_to '/'
+      end
+    end
   end
 
   # GET /books/new
@@ -54,6 +65,11 @@ end
 
   # GET /books/1/edit
   def edit
+    if current_user.role == 'librarian'
+      if @book.libraries_id != current_user.libraries_id
+        redirect_to '/'
+      end
+    end
   end
 
   # POST /books
@@ -285,6 +301,17 @@ end
   def borrow_history
     @book = Book.find(params[:book_id])
     @transaction_log = TransactionLog.where('books_id = ?', params[:book_id])
+  end
+
+
+  #show checked out books list ---to admin and librarian
+  def checked_out_books
+    @user_id = params[:user_id]
+    if @user_id == 'admin'
+      @record = BookIssueTransaction.where('status = ?', '4')
+    else
+      @record = BookIssueTransaction.where('status = ? and libraries_id = ?', '4', @user_id)
+    end
   end
 
   private
