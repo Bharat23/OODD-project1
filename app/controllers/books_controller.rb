@@ -1,5 +1,8 @@
 require 'base64'
 
+# use this code to send the mailer
+# BookIssueMailer.book_issued_email(<student_id>, <book_id>).deliver_now
+
 class BooksController < ApplicationController
   before_action only: [:new, :create, :edit, :update] do 
     allowed_users(['admin', 'librarian'])
