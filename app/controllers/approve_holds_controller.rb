@@ -7,7 +7,7 @@ class ApproveHoldsController < ApplicationController
   def approve_reject_request
     record_id = params[:record_id].to_i
     type = params[:approval_type].to_i
-    puts "+++++++++++++++++++++++++++++++++++"
+    #puts "+++++++++++++++++++++++++++++++++++"
     @request = BookIssueTransaction.find(record_id)
     @libraries_id = @request.libraries_id
     if type == 1

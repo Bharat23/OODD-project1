@@ -22,6 +22,8 @@
     <br>
     <%= link_to 'Show Book Holds', checkout_hold_list_path('admin') %>
     <br>
+    <%= link_to 'Show Checked Out Books', checked_out_books_path('admin') %>
+    <br>
     <%#= link_to 'Show Checked out Books', checkout_hold_list_path('checked') %>
   <% end %>
   <% if current_user.role == 'librarian' %>
@@ -42,6 +44,8 @@
       <%= link_to 'View My Library', library_path(current_user.libraries_id) %>
       <br>
       <%= link_to 'Show Hold Requests', hold_request_path(current_user.libraries_id) %>
+      <br>
+      <%= link_to 'Show Checked Out Books', checked_out_books_path(current_user.libraries_id) %>
     <% end %>
   <% end %>
   <% if current_user.role == 'student' %>

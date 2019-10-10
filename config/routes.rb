@@ -57,6 +57,8 @@ Rails.application.routes.draw do
   match '/hold_requests/delete_hold_request/:stud_id/:b_id' => 'hold_requests#delete_hold_request', :via => :get, as: :delete_hold_request
   # end
   #
+  match '/books/checked_out_books/:user_id' => 'books#checked_out_books', :via => :get, as: :checked_out_books
+  #
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
